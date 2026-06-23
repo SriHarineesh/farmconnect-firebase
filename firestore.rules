@@ -1,0 +1,87 @@
+// firestore.rules
+// Deploy with: firebase deploy --only firestore:rules
+//
+// These rules lock Firestore so:
+// - Only authenticated users can read/write (no open database)
+// - Users can only edit their own profile
+// - Only the backend (Admin SDK) bypasses these rules entirely
+// - Admin operations go through the Express backend which uses Admin SDK
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helper functions ────────────────────────────────────────────────────
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return request.auth.uid == uid;
+    }
+
+    function getUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && getUserRole() == 'admin';
+    }
+
+    function isFarmer() {
+      return isSignedIn() && getUserRole() == 'farmer';
+    }
+
+    function isVerifiedRetailer() {
+      return isSignedIn()
+        && getUserRole() == 'retailer'
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isVerified == true;
+    }
+
+    // ── Users collection ────────────────────────────────────────────────────
+    match /users/{uid} {
+      // Anyone signed in can read a user profile (needed for crop card farmer info)
+      allow read: if isSignedIn();
+      // Only the user themselves can create their own profile
+      allow create: if isOwner(uid);
+      // Only the user can update their own profile (role/isVerified protected — set by backend only)
+      allow update: if isOwner(uid)
+        && !request.resource.data.diff(resource.data).affectedKeys()
+            .hasAny(['role', 'isVerified', 'isActive']);
+      // No client-side deletes
+      allow delete: if false;
+    }
+
+    // ── Crops collection ────────────────────────────────────────────────────
+    match /crops/{cropId} {
+      // Anyone can browse active listings
+      allow read: if resource.data.status == 'active' || isSignedIn();
+      // Only farmers can create listings for themselves
+      allow create: if isFarmer()
+        && request.resource.data.farmerUid == request.auth.uid;
+      // Farmer who owns it can update; admin handled by backend
+      allow update: if isSignedIn()
+        && resource.data.farmerUid == request.auth.uid;
+      // Farmer who owns it can delete
+      allow delete: if isSignedIn()
+        && resource.data.farmerUid == request.auth.uid;
+    }
+
+    // ── Contacts collection ─────────────────────────────────────────────────
+    match /contacts/{contactId} {
+      // Farmer sees their own contacts; retailer sees their own sent requests
+      allow read: if isSignedIn()
+        && (resource.data.farmerUid == request.auth.uid
+            || resource.data.retailerUid == request.auth.uid);
+      // Only verified retailers can create contact/interest records
+      allow create: if isVerifiedRetailer()
+        && request.resource.data.retailerUid == request.auth.uid;
+      // Farmer can update status (accept/decline); retailer cannot modify
+      allow update: if isSignedIn()
+        && resource.data.farmerUid == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'respondedAt']);
+      allow delete: if false;
+    }
+
+  }
+}

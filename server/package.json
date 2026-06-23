@@ -1,0 +1,21 @@
+{
+  "name": "farmconnect-firebase-server",
+  "version": "2.0.0",
+  "description": "FarmConnect full-stack backend — Firebase edition",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-validator": "^7.0.1",
+    "firebase-admin": "^12.0.0",
+    "socket.io": "^4.6.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
