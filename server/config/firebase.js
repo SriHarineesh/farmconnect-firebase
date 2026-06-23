@@ -1,41 +1,31 @@
 const admin = require("firebase-admin");
 require("dotenv").config();
 
-// ─────────────────────────────────────────────────────────────────────────────
-// TWO WAYS TO INITIALISE — choose whichever suits your setup:
-//
-// OPTION A (recommended for deployment): env variables (default below)
-// OPTION B (easier for local dev): point to the downloaded JSON key file
-//   1. Download service account JSON from Firebase Console
-//      → Project Settings → Service Accounts → Generate new private key
-//   2. Place the file at server/serviceAccountKey.json
-//   3. Set GOOGLE_APPLICATION_CREDENTIALS=./serviceAccountKey.json in .env
-//   4. Swap the initializeApp call below for:
-//      admin.initializeApp({ credential: admin.credential.applicationDefault() });
-// ─────────────────────────────────────────────────────────────────────────────
-
 if (!admin.apps.length) {
- admin.initializeApp({
-  credential: admin.credential.cert(
-    require('./serviceAccountKey.json')
-  ),
-});
+  admin.initializeApp({
+    credential: admin.credential.cert({
+      type: "service_account",
+      project_id: process.env.FIREBASE_PROJECT_ID,
+      private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
+      private_key: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+      client_email: process.env.FIREBASE_CLIENT_EMAIL,
+      client_id: process.env.FIREBASE_CLIENT_ID,
+      auth_uri: process.env.FIREBASE_AUTH_URI,
+      token_uri: process.env.FIREBASE_TOKEN_URI,
+    }),
+  });
 }
 
-const db   = admin.firestore();
+const db = admin.firestore();
 const auth = admin.auth();
-
-// Firestore settings — disable deprecated timestamp behaviour warning
 db.settings({ ignoreUndefinedProperties: true });
 
-// Handy helpers re-exported so controllers don't need to import admin directly
-const FieldValue  = admin.firestore.FieldValue;
-const Timestamp   = admin.firestore.Timestamp;
+const FieldValue = admin.firestore.FieldValue;
+const Timestamp = admin.firestore.Timestamp;
 
-// ─── Collection name constants (one place to rename if needed) ────────────────
 const COLLECTIONS = {
-  USERS:    "users",
-  CROPS:    "crops",
+  USERS: "users",
+  CROPS: "crops",
   CONTACTS: "contacts",
 };
 
