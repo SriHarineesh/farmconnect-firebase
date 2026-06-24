@@ -4,17 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FarmConnect — Firebase Edition</title>
-<meta name="description" content="FarmConnect: Firebase Auth + Firestore + Express. Farmers, Dealers, Admin.">
+<meta name="description" content="FarmConnect: Firebase Auth + Firestore. Farmers, Dealers, Admin.">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#1F3D2B">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
-
-<!-- ── Firebase Client SDK (compat version — works without a bundler) ── -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-
 <style>
 *,*::before,*::after{box-sizing:border-box}
 body,h1,h2,h3,h4,p,ul,ol{margin:0}
@@ -24,7 +21,6 @@ a{color:inherit;text-decoration:none}
 button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 input,select,textarea,button{font-family:inherit}
 table{border-collapse:collapse;width:100%}
-
 :root{
   --bg:#F4F6F0;--bg-alt:#EAEEE2;--surface:#fff;
   --ink:#211C16;--ink-soft:#5B5546;
@@ -50,31 +46,27 @@ p.lede{font-size:1.05rem;color:var(--ink-soft);max-width:34em}
 .eyebrow{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--font-m);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:.8rem}
 .eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--gold)}
 .container{width:100%;max-width:1160px;margin-inline:auto;padding-inline:1.5rem}
-.section{padding-block:4rem}
-.section--alt{background:var(--bg-alt)}
+.section{padding-block:4rem}.section--alt{background:var(--bg-alt)}
 .section-head{max-width:600px;margin-bottom:2.5rem}
-
-/* Buttons */
-.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.5rem;border-radius:var(--r-sm);font-weight:600;font-size:.95rem;transition:transform .15s,background-color .15s;white-space:nowrap}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.5rem;border-radius:var(--r-sm);font-weight:600;font-size:.95rem;transition:transform .15s,background-color .15s;white-space:nowrap;cursor:pointer}
 .btn:hover{transform:translateY(-1px)}
-.btn-primary{background:var(--forest);color:#fff}
+.btn-primary{background:var(--forest);color:#fff;border:none}
 .btn-primary:hover{background:var(--forest-soft)}
-.btn-accent{background:var(--gold);color:var(--ink)}
+.btn-accent{background:var(--gold);color:var(--ink);border:none}
 .btn-accent:hover{background:var(--gold-deep);color:#fff}
 .btn-outline{background:transparent;border:1.5px solid var(--forest);color:var(--forest)}
 .btn-outline:hover{background:var(--forest);color:#fff}
-.btn-danger{background:var(--clay);color:#fff}
+.btn-danger{background:var(--clay);color:#fff;border:none}
 .btn-sm{padding:.5rem 1rem;font-size:.85rem}
 .btn-block{width:100%;justify-content:center}
 .btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
-
 /* Header */
-.site-header{position:sticky;top:0;z-index:50;background:rgba(244,246,240,.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.site-header{position:sticky;top:0;z-index:50;background:rgba(244,246,240,.95);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
 .header-inner{display:flex;align-items:center;justify-content:space-between;height:68px;gap:1rem}
 .logo{display:flex;align-items:center;gap:.5rem;font-family:var(--font-d);font-weight:700;font-size:1.15rem;color:var(--forest)}
 .logo svg{width:24px;height:24px;color:var(--gold-deep)}
 .nav ul{display:flex;align-items:center;gap:1.8rem}
-.nav a{font-size:.92rem;font-weight:500;color:var(--ink-soft);padding-bottom:3px;border-bottom:2px solid transparent;transition:color .15s,border-color .15s}
+.nav a{font-size:.92rem;font-weight:500;color:var(--ink-soft);padding-bottom:3px;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;cursor:pointer}
 .nav a:hover,.nav a.is-active{color:var(--forest)}
 .nav a.is-active{border-color:var(--gold);font-weight:600}
 .nav-toggle{display:none;flex-direction:column;gap:5px;width:28px;padding:.5rem}
@@ -82,30 +74,24 @@ p.lede{font-size:1.05rem;color:var(--ink-soft);max-width:34em}
 @media(max-width:820px){.nav-toggle{display:flex}.nav{position:fixed;top:68px;left:0;right:0;background:var(--surface);border-bottom:1px solid var(--line);padding:1.5rem;transform:translateY(-115%);transition:transform .25s}.nav.is-open{transform:translateY(0)}.nav ul{flex-direction:column;align-items:flex-start;gap:1rem}}
 #authButtons{display:flex;gap:.75rem;align-items:center;flex-shrink:0}
 #userBadge{font-family:var(--font-m);font-size:.78rem;color:var(--gold-deep);background:rgba(226,163,59,.12);border:1px solid rgba(226,163,59,.35);border-radius:20px;padding:.3rem .75rem;font-weight:600}
-
-/* Page router */
-.page{display:none}
-.page.is-active{display:block}
-
+.page{display:none}.page.is-active{display:block}
 /* Cards */
 .card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.25rem}
 .stamp-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:1.75rem;transition:border-color .15s,transform .15s}
 .stamp-card:hover{border-color:var(--gold);transform:translateY(-2px)}
 .stamp-icon{width:48px;height:48px;border-radius:50%;border:1.5px solid var(--forest);display:flex;align-items:center;justify-content:center;color:var(--forest);margin-bottom:1.1rem}
 .stamp-icon svg{width:20px;height:20px}
-
 /* Ticker */
-.ticker-board{background:var(--ticker-bg);border-radius:var(--r-md);padding:1.5rem;overflow-x:auto;box-shadow:inset 0 0 50px rgba(0,0,0,.45)}
+.ticker-board{background:var(--ticker-bg);border-radius:var(--r-md);padding:1.5rem;overflow-x:auto}
 .ticker-board-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;margin-bottom:.9rem;color:rgba(255,255,255,.7);font-family:var(--font-m);font-size:.8rem}
 .ticker-board-head .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ticker-up);margin-right:.4rem;box-shadow:0 0 6px var(--ticker-up)}
 table.ticker-table{font-family:var(--font-m);color:var(--ticker-text);min-width:460px}
 .ticker-table thead th{text-align:left;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.4);padding-bottom:.65rem;border-bottom:1px solid rgba(255,255,255,.12);font-weight:500}
 .ticker-table td{padding:.85rem .5rem;border-bottom:1px solid rgba(255,255,255,.06);font-size:.95rem}
 .ticker-table td.crop-name{color:#fff;font-weight:600}
-.ticker-table td.crop-name .unit-tag{color:rgba(255,255,255,.4);font-size:.72rem;margin-left:.35rem}
+.unit-tag{color:rgba(255,255,255,.4);font-size:.72rem;margin-left:.35rem}
 .price-up{color:var(--ticker-up);text-shadow:0 0 8px rgba(95,227,107,.4)}
 .price-down{color:var(--ticker-down);text-shadow:0 0 8px rgba(255,107,87,.4)}
-
 /* Forms */
 .form-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:2rem;box-shadow:var(--shadow)}
 .field{margin-bottom:1.2rem;display:flex;flex-direction:column;gap:.35rem}
@@ -116,84 +102,75 @@ table.ticker-table{font-family:var(--font-m);color:var(--ticker-text);min-width:
 .field textarea{resize:vertical;min-height:80px}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
 @media(max-width:520px){.field-row{grid-template-columns:1fr}}
-.field.has-error input,.field.has-error select{border-color:var(--clay)}
 .form-success{display:none;background:rgba(63,125,79,.1);border:1px solid var(--leaf);color:var(--leaf);padding:.9rem 1.1rem;border-radius:var(--r-sm);margin-bottom:1.25rem;font-weight:600;font-size:.9rem}
 .form-success.is-visible{display:block}
 .form-error-msg{display:none;background:rgba(181,67,46,.08);border:1px solid var(--clay);color:var(--clay);padding:.9rem 1.1rem;border-radius:var(--r-sm);margin-bottom:1.25rem;font-size:.88rem}
 .form-error-msg.is-visible{display:block}
-
 /* Auth */
 .auth-layout{min-height:calc(100vh - 68px);display:flex;align-items:center;justify-content:center;padding:2rem 1.5rem}
 .auth-tabs{display:flex;margin-bottom:1.75rem;border-bottom:2px solid var(--line)}
 .auth-tab{padding:.7rem 1.25rem;font-weight:600;font-size:.9rem;color:var(--ink-soft);border-bottom:2px solid transparent;margin-bottom:-2px;cursor:pointer;background:none;border-top:none;border-left:none;border-right:none;transition:color .15s}
 .auth-tab.is-active{color:var(--forest);border-bottom-color:var(--gold)}
-.auth-panel{display:none}
-.auth-panel.is-active{display:block}
+.auth-panel{display:none}.auth-panel.is-active{display:block}
 .role-selector{display:flex;gap:.6rem;margin-bottom:1.2rem}
 .role-pill{flex:1;padding:.6rem;border:1.5px solid var(--line);border-radius:var(--r-sm);text-align:center;font-size:.85rem;font-weight:600;color:var(--ink-soft);cursor:pointer;background:none;transition:all .15s}
 .role-pill.selected{border-color:var(--forest);background:var(--forest);color:#fff}
-
-/* Filter bar */
+/* Filter */
 .filter-bar{display:flex;flex-wrap:wrap;gap:1rem;align-items:end;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:1.4rem;margin-bottom:2rem}
 .filter-field{display:flex;flex-direction:column;gap:.35rem;min-width:150px}
 .filter-field label{font-size:.8rem;font-weight:600;color:var(--ink-soft)}
 .filter-field input,.filter-field select{padding:.6rem .8rem;border:1.5px solid var(--line);border-radius:var(--r-sm);background:var(--bg);font-size:.92rem}
 .filter-actions{display:flex;gap:.6rem;align-self:end;margin-left:auto}
-
 /* Listing cards */
 .listing-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1.25rem}
 .listing-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:1.5rem;display:flex;flex-direction:column;gap:.6rem}
 .listing-card .crop-tag{display:flex;align-items:center;gap:.45rem;font-family:var(--font-d);font-weight:700;font-size:1rem;color:var(--forest)}
 .listing-card .qty{font-family:var(--font-m);font-weight:600;font-size:1.1rem}
-.listing-card .meta{font-size:.84rem;color:var(--ink-soft);display:flex;align-items:center;gap:.35rem}
+.listing-card .meta{font-size:.84rem;color:var(--ink-soft)}
 .listing-card .price-tag{font-family:var(--font-m);font-size:.9rem;color:var(--leaf);font-weight:600}
 .listing-card .posted{font-size:.74rem;color:var(--ink-soft);margin-top:auto}
 .empty-state{text-align:center;padding:3rem 1.5rem;color:var(--ink-soft);border:1.5px dashed var(--line);border-radius:var(--r-md);grid-column:1/-1}
-
 /* Dashboard */
-.dash-layout{display:grid;grid-template-columns:220px 1fr;gap:2rem;align-items:start}
+.dash-layout{display:grid;grid-template-columns:230px 1fr;gap:2rem;align-items:start}
 @media(max-width:820px){.dash-layout{grid-template-columns:1fr}}
 .dash-sidebar{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:1.25rem;position:sticky;top:88px}
 .dash-sidebar h4{font-size:.75rem;font-family:var(--font-m);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:.75rem}
-.dash-nav-link{display:flex;align-items:center;gap:.55rem;padding:.55rem .75rem;border-radius:var(--r-sm);font-size:.9rem;font-weight:500;color:var(--ink-soft);cursor:pointer;transition:background .15s,color .15s;width:100%;text-align:left;border:none;background:none}
+.dash-nav-link{display:flex;align-items:center;gap:.55rem;padding:.6rem .75rem;border-radius:var(--r-sm);font-size:.9rem;font-weight:500;color:var(--ink-soft);cursor:pointer;transition:background .15s,color .15s;width:100%;text-align:left;border:none;background:none;margin-bottom:.2rem}
 .dash-nav-link:hover{background:var(--bg-alt);color:var(--ink)}
 .dash-nav-link.is-active{background:var(--forest);color:#fff}
 .dash-nav-link svg{width:16px;height:16px;flex-shrink:0}
-.dash-panel{display:none}
-.dash-panel.is-active{display:block}
+.dash-panel{display:none}.dash-panel.is-active{display:block}
 .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:2rem}
 .stat-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:1.25rem;text-align:center}
 .stat-card .num{font-family:var(--font-d);font-size:2rem;font-weight:700;color:var(--forest)}
 .stat-card .lbl{font-size:.8rem;color:var(--ink-soft);margin-top:.2rem}
-
+/* Welcome card */
+.welcome-card{background:linear-gradient(135deg,var(--forest) 0%,var(--forest-soft) 100%);color:#fff;border-radius:var(--r-md);padding:2rem;margin-bottom:2rem}
+.welcome-card h2{color:#fff;margin-bottom:.4rem}
+.welcome-card p{color:rgba(255,255,255,.75);font-size:.95rem}
+.welcome-card .role-badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:.3rem .9rem;font-family:var(--font-m);font-size:.78rem;font-weight:600;margin-bottom:1rem;letter-spacing:.05em}
 /* Table */
 .data-table{width:100%;border-collapse:collapse;background:var(--surface);border-radius:var(--r-md);overflow:hidden;border:1px solid var(--line)}
 .data-table th{background:var(--bg-alt);padding:.75rem 1rem;text-align:left;font-size:.8rem;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.05em}
 .data-table td{padding:.8rem 1rem;border-bottom:1px solid var(--line);font-size:.88rem;vertical-align:top}
 .data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:var(--bg)}
 .badge{display:inline-block;padding:.2rem .65rem;border-radius:20px;font-size:.75rem;font-weight:600;font-family:var(--font-m)}
 .badge-green{background:rgba(63,125,79,.12);color:var(--leaf)}
 .badge-gold{background:rgba(226,163,59,.15);color:var(--gold-deep)}
 .badge-red{background:rgba(181,67,46,.1);color:var(--clay)}
 .badge-grey{background:var(--bg-alt);color:var(--ink-soft)}
-
 /* Toast */
 #toastContainer{position:fixed;bottom:1.5rem;right:1.5rem;z-index:999;display:flex;flex-direction:column;gap:.6rem}
 .toast{background:var(--forest);color:#fff;padding:.85rem 1.25rem;border-radius:var(--r-sm);font-size:.88rem;max-width:320px;box-shadow:0 8px 24px rgba(0,0,0,.2);animation:toastIn .25s ease}
 .toast.toast-error{background:var(--clay)}
 .toast.toast-gold{background:var(--gold-deep)}
 @keyframes toastIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-
 /* Loading */
 #loadingOverlay{position:fixed;inset:0;background:rgba(244,246,240,.85);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
 #loadingOverlay.show{display:flex}
 .spinner{width:40px;height:40px;border:3px solid var(--line);border-top-color:var(--forest);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* Firebase init warning */
-#fbWarning{background:#FFF3CD;border:1px solid #FFC107;color:#856404;padding:1rem 1.5rem;text-align:center;font-size:.9rem;display:none}
-#fbWarning.show{display:block}
-
 /* Footer */
 .site-footer{background:var(--forest);color:rgba(255,255,255,.82);padding-block:3rem 1.5rem}
 .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1.3fr;gap:2rem}
@@ -206,32 +183,28 @@ table.ticker-table{font-family:var(--font-m);color:var(--ticker-text);min-width:
 .footer-col a:hover{color:var(--gold)}
 .footer-bottom{border-top:1px solid rgba(255,255,255,.13);margin-top:2.5rem;padding-top:1.25rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem;font-size:.78rem;color:rgba(255,255,255,.45)}
 .mt-2{margin-top:.5rem}.mt-4{margin-top:1rem}.mt-8{margin-top:2rem}
+/* Real-time indicator */
+.live-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ticker-up);margin-right:.4rem;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.section-toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem}
 </style>
 </head>
 <body>
-
-<!-- Firebase config warning (shown if not configured) -->
-<div id="fbWarning">
-  ⚠️ Firebase is not configured yet. Open <code>index.html</code> and fill in your Firebase project config in the <code>FIREBASE_CONFIG</code> object at the top of the script. Running in demo mode.
-</div>
-
 <div id="toastContainer"></div>
 <div id="loadingOverlay"><div class="spinner"></div></div>
 
-<!-- ── Header ── -->
 <header class="site-header">
   <div class="container header-inner">
     <a href="#home" data-page="home" class="logo">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M12 21V9"/><path d="M12 9c-3 0-5-2-5-5 3 0 5 2 5 5Z"/><path d="M12 13c3 0 5-2 5-5-3 0-5 2-5 5Z"/><path d="M12 17c-2.5 0-4-1.5-4-4 2.5 0 4 1.5 4 4Z"/>
-      </svg>FarmConnect
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V9"/><path d="M12 9c-3 0-5-2-5-5 3 0 5 2 5 5Z"/><path d="M12 13c3 0 5-2 5-5-3 0-5 2-5 5Z"/><path d="M12 17c-2.5 0-4-1.5-4-4 2.5 0 4 1.5 4 4Z"/></svg>
+      FarmConnect
     </a>
     <nav class="nav" id="siteNav">
       <ul>
         <li><a href="#home" data-page="home" class="is-active">Home</a></li>
         <li><a href="#browse" data-page="browse">Browse Crops</a></li>
         <li><a href="#prices" data-page="prices">Market Prices</a></li>
-        <li id="dashNavItem" style="display:none"><a href="#dashboard" data-page="dashboard">Dashboard</a></li>
+        <li id="dashNavItem" style="display:none"><a href="#dashboard" data-page="dashboard">My Dashboard</a></li>
       </ul>
     </nav>
     <div id="authButtons">
@@ -246,7 +219,6 @@ table.ticker-table{font-family:var(--font-m);color:var(--ticker-text);min-width:
 </header>
 
 <main>
-
 <!-- ═══ HOME ═══ -->
 <div class="page is-active" id="page-home">
   <section class="section">
@@ -254,57 +226,34 @@ table.ticker-table{font-family:var(--font-m);color:var(--ticker-text);min-width:
       <div class="section-head">
         <span class="eyebrow">Andhra Pradesh Agriculture Marketplace</span>
         <h1>Faster sales, fair prices,<br>no middlemen</h1>
-        <p class="lede">FarmConnect connects farmers directly with verified dealers — post crops, browse supply, check mandi prices, all in one place.</p>
+        <p class="lede">FarmConnect connects farmers directly with verified dealers — post crops, browse supply, check live mandi prices.</p>
       </div>
       <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.75rem">
-        <a href="#auth" data-page="auth" data-role="farmer" class="btn btn-primary">I'm a Farmer — List My Crop</a>
-        <a href="#auth" data-page="auth" data-role="retailer" class="btn btn-outline">I'm a Dealer — Browse Crops</a>
+        <a href="#auth" data-page="auth" data-role="farmer" class="btn btn-primary">🌾 I'm a Farmer — List My Crop</a>
+        <a href="#auth" data-page="auth" data-role="retailer" class="btn btn-outline">🏪 I'm a Dealer — Browse Crops</a>
       </div>
     </div>
   </section>
-
   <section class="section section--alt">
     <div class="container">
       <div class="section-head"><span class="eyebrow">How It Works</span><h2>Three steps, zero agents</h2></div>
       <div class="card-grid">
-        <div class="stamp-card">
-          <div class="stamp-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div>
-          <h3>Farmer posts crop</h3>
-          <p>Name, quantity, location, price — takes two minutes. Visible to all verified dealers instantly via Firestore.</p>
-        </div>
-        <div class="stamp-card">
-          <div class="stamp-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.3-4.3"/></svg></div>
-          <h3>Dealer filters &amp; finds</h3>
-          <p>Filter by crop, district, quantity. Phone numbers only visible once admin-verified.</p>
-        </div>
-        <div class="stamp-card">
-          <div class="stamp-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h3.4l1.6 4.6-2.2 1.8a13 13 0 0 0 6 6l1.8-2.2L20 16v3.4a1.6 1.6 0 0 1-1.7 1.6A16 16 0 0 1 3.4 5.7 1.6 1.6 0 0 1 5 4Z"/></svg></div>
-          <h3>Direct call — deal done</h3>
-          <p>No agent fee, no commission. Every interaction is logged in Firestore for the admin.</p>
-        </div>
-        <div class="stamp-card">
-          <div class="stamp-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg></div>
-          <h3>Firebase-powered security</h3>
-          <p>Firebase Auth handles credentials. Firestore stores all data. Admin approves retailers before they access contacts.</p>
-        </div>
+        <div class="stamp-card"><div class="stamp-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div><h3>Farmer posts crop</h3><p>Name, quantity, location, price. Takes two minutes. Visible to all verified dealers instantly.</p></div>
+        <div class="stamp-card"><div class="stamp-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.3-4.3"/></svg></div><h3>Dealer filters &amp; finds</h3><p>Filter by crop, district, quantity. Phone numbers only visible once admin-verified.</p></div>
+        <div class="stamp-card"><div class="stamp-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h3.4l1.6 4.6-2.2 1.8a13 13 0 0 0 6 6l1.8-2.2L20 16v3.4a1.6 1.6 0 0 1-1.7 1.6A16 16 0 0 1 3.4 5.7 1.6 1.6 0 0 1 5 4Z"/></svg></div><h3>Direct call — deal done</h3><p>No agent fee, no commission. Every interaction logged in Firestore for the admin.</p></div>
+        <div class="stamp-card"><div class="stamp-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg></div><h3>Admin-verified security</h3><p>Retailers submit ID. Admin approves before they can see farmer contact numbers.</p></div>
       </div>
     </div>
   </section>
-
   <section class="section">
     <div class="container">
       <div class="section-head"><span class="eyebrow">Live Prices Preview</span><h2>Today's mandi board</h2></div>
       <div class="ticker-board">
-        <div class="ticker-board-head">
-          <span><span class="dot"></span>Fetched from <code>/api/prices</code></span>
-          <span>₹ / Quintal</span>
-        </div>
+        <div class="ticker-board-head"><span><span class="dot"></span>Live from API</span><span>₹ / Quintal</span></div>
         <table class="ticker-table"><thead><tr><th>Crop</th><th>Price</th><th>Change</th></tr></thead>
         <tbody id="homeTickerBody"></tbody></table>
       </div>
-      <div style="margin-top:1rem;text-align:right">
-        <a href="#prices" data-page="prices" class="btn btn-outline btn-sm">Full price board →</a>
-      </div>
+      <div style="margin-top:1rem;text-align:right"><a href="#prices" data-page="prices" class="btn btn-outline btn-sm">Full price board →</a></div>
     </div>
   </section>
 </div>
@@ -313,31 +262,33 @@ table.ticker-table{font-family:var(--font-m);color:var(--ticker-text);min-width:
 <div class="page" id="page-auth">
   <div class="auth-layout">
     <div class="form-card" style="max-width:460px;width:100%">
-      <h2 style="margin-bottom:1.5rem">Welcome to FarmConnect</h2>
+      <h2 style="margin-bottom:.5rem">Welcome to FarmConnect</h2>
+      <p style="color:var(--ink-soft);font-size:.9rem;margin-bottom:1.5rem">Real-time crop marketplace for Andhra Pradesh</p>
       <div class="auth-tabs">
         <button class="auth-tab is-active" data-tab="login">Login</button>
         <button class="auth-tab" data-tab="signup">Sign Up</button>
       </div>
 
-      <!-- LOGIN -->
+      <!-- LOGIN PANEL -->
       <div class="auth-panel is-active" id="panel-login">
         <div class="form-error-msg" id="loginError"></div>
         <div class="form-success" id="loginSuccess"></div>
         <div class="field">
-          <label for="loginPhone">Mobile number</label>
-          <input type="tel" id="loginPhone" placeholder="10-digit number" maxlength="10">
+          <label for="loginInput">Email or Phone number</label>
+          <input type="text" id="loginInput" placeholder="e.g. 9876543210 or you@email.com" autocomplete="username">
+          <span class="hint">Enter your 10-digit phone number or email address</span>
         </div>
         <div class="field">
           <label for="loginPass">Password</label>
-          <input type="password" id="loginPass" placeholder="Your password">
+          <input type="password" id="loginPass" placeholder="Your password" autocomplete="current-password">
         </div>
-        <button class="btn btn-primary btn-block mt-4" id="loginBtn">Login with Firebase</button>
+        <button class="btn btn-primary btn-block mt-4" id="loginBtn">Login →</button>
         <p style="margin-top:1rem;font-size:.82rem;color:var(--ink-soft);text-align:center">
-          Firebase Auth handles your credentials securely — no password stored on our server.
+          Don't have an account? <button class="auth-tab" data-tab="signup" style="color:var(--forest);font-weight:600;background:none;border:none;cursor:pointer;font-size:.82rem;text-decoration:underline">Sign up here</button>
         </p>
       </div>
 
-      <!-- SIGNUP -->
+      <!-- SIGNUP PANEL -->
       <div class="auth-panel" id="panel-signup">
         <div class="form-error-msg" id="signupError"></div>
         <p style="margin-bottom:1rem;font-size:.88rem;font-weight:600">I am a:</p>
@@ -345,18 +296,12 @@ table.ticker-table{font-family:var(--font-m);color:var(--ticker-text);min-width:
           <button class="role-pill selected" data-role="farmer">🌾 Farmer</button>
           <button class="role-pill" data-role="retailer">🏪 Dealer</button>
         </div>
-        <div class="field">
-          <label for="signupName">Full name</label>
-          <input type="text" id="signupName" placeholder="e.g. Ramesh Kumar">
-        </div>
-        <div class="field">
-          <label for="signupPhone">Mobile number</label>
-          <input type="tel" id="signupPhone" placeholder="10-digit number" maxlength="10">
-        </div>
+        <div class="field"><label for="signupName">Full name</label><input type="text" id="signupName" placeholder="e.g. Ramesh Kumar" autocomplete="name"></div>
+        <div class="field"><label for="signupPhone">Mobile number</label><input type="tel" id="signupPhone" placeholder="10-digit number starting with 6-9" maxlength="10" autocomplete="tel"></div>
         <div class="field">
           <label for="signupDistrict">District</label>
           <select id="signupDistrict">
-            <option value="" disabled selected>Select district</option>
+            <option value="" disabled selected>Select your district</option>
             <option>Visakhapatnam</option><option>Vizianagaram</option><option>Srikakulam</option>
             <option>Anakapalli</option><option>East Godavari</option><option>West Godavari</option>
             <option>Krishna</option><option>Guntur</option><option>Anantapur</option>
@@ -364,20 +309,11 @@ table.ticker-table{font-family:var(--font-m);color:var(--ticker-text);min-width:
           </select>
         </div>
         <div id="retailerFields" style="display:none">
-          <div class="field">
-            <label for="signupBusiness">Business name</label>
-            <input type="text" id="signupBusiness" placeholder="Your shop or company name">
-          </div>
-          <div class="field">
-            <label for="signupGovtId">Govt ID <span class="hint">(Aadhaar / GST — for admin verification)</span></label>
-            <input type="text" id="signupGovtId" placeholder="ID number">
-          </div>
+          <div class="field"><label for="signupBusiness">Business name</label><input type="text" id="signupBusiness" placeholder="Your shop or company name"></div>
+          <div class="field"><label for="signupGovtId">Govt ID <span class="hint">(Aadhaar / GST — for admin verification)</span></label><input type="text" id="signupGovtId" placeholder="ID number"></div>
         </div>
-        <div class="field">
-          <label for="signupPass">Password <span class="hint">(min 6 characters)</span></label>
-          <input type="password" id="signupPass" placeholder="Stored securely in Firebase Auth">
-        </div>
-        <button class="btn btn-primary btn-block mt-4" id="signupBtn">Create Account</button>
+        <div class="field"><label for="signupPass">Password <span class="hint">(minimum 6 characters)</span></label><input type="password" id="signupPass" placeholder="Choose a strong password" autocomplete="new-password"></div>
+        <button class="btn btn-primary btn-block mt-4" id="signupBtn">Create Account →</button>
       </div>
     </div>
   </div>
@@ -387,11 +323,7 @@ table.ticker-table{font-family:var(--font-m);color:var(--ticker-text);min-width:
 <div class="page" id="page-browse">
   <section class="section">
     <div class="container">
-      <div class="section-head">
-        <span class="eyebrow">For Dealers</span>
-        <h1>Find crop supply near you</h1>
-        <p class="lede">Live listings from Firestore. Verified dealers see contact numbers. Others see an interest-request button.</p>
-      </div>
+      <div class="section-head"><span class="eyebrow">For Dealers</span><h1>Find crop supply near you</h1><p class="lede">Live listings from Firestore. Verified dealers see farmer contact numbers directly.</p></div>
       <div class="filter-bar">
         <div class="filter-field"><label for="bCrop">Crop</label>
           <select id="bCrop"><option value="">All crops</option>
@@ -408,9 +340,7 @@ table.ticker-table{font-family:var(--font-m);color:var(--ticker-text);min-width:
             <option>Kurnool</option><option>Chittoor</option><option>Kadapa</option>
           </select>
         </div>
-        <div class="filter-field"><label for="bMinQty">Min qty (Quintal)</label>
-          <input type="number" id="bMinQty" min="0" placeholder="e.g. 20">
-        </div>
+        <div class="filter-field"><label for="bMinQty">Min qty (Quintal)</label><input type="number" id="bMinQty" min="0" placeholder="e.g. 20"></div>
         <div class="filter-actions">
           <button class="btn btn-outline btn-sm" id="bReset">Reset</button>
           <button class="btn btn-primary btn-sm" id="bSearch">Search</button>
@@ -426,20 +356,14 @@ table.ticker-table{font-family:var(--font-m);color:var(--ticker-text);min-width:
 <div class="page" id="page-prices">
   <section class="section">
     <div class="container">
-      <div class="section-head">
-        <span class="eyebrow">Live Prices</span>
-        <h1>Today's mandi price board</h1>
-      </div>
+      <div class="section-head"><span class="eyebrow">Live Prices</span><h1>Today's mandi price board</h1></div>
       <div class="ticker-board">
-        <div class="ticker-board-head">
-          <span><span class="dot"></span>From <code>GET /api/prices</code></span>
-          <span>₹ / Quintal</span>
-        </div>
+        <div class="ticker-board-head"><span><span class="dot"></span>Live from backend API</span><span>₹ / Quintal</span></div>
         <table class="ticker-table"><thead><tr><th>Crop</th><th>Price</th><th>Change</th></tr></thead>
         <tbody id="fullTickerBody"></tbody></table>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-top:1.25rem">
-        <button class="btn btn-outline btn-sm" id="refreshPricesBtn">↻ Refresh</button>
+        <button class="btn btn-outline btn-sm" id="refreshPricesBtn">↻ Refresh Prices</button>
         <span id="priceTimestamp" style="font-family:var(--font-m);font-size:.82rem;color:var(--ink-soft)"></span>
       </div>
     </div>
@@ -450,21 +374,18 @@ table.ticker-table{font-family:var(--font-m);color:var(--ticker-text);min-width:
 <div class="page" id="page-dashboard">
   <section class="section">
     <div class="container">
-      <div style="margin-bottom:2rem">
-        <span class="eyebrow" id="dashRoleEyebrow"></span>
-        <h1 id="dashTitle"></h1>
-      </div>
+      <div id="dashWelcome" style="margin-bottom:2rem"></div>
       <div class="dash-layout">
         <div class="dash-sidebar"><h4>Navigation</h4><div id="dashSidebarNav"></div></div>
         <div id="dashPanels">
 
           <!-- FARMER PANELS -->
           <div class="dash-panel" id="dp-myListings">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
-              <h2>My Listings</h2>
+            <div class="section-toolbar">
+              <h2><span class="live-dot"></span>My Listings</h2>
               <button class="btn btn-primary btn-sm" id="newListingBtn">+ Add New Crop</button>
             </div>
-            <div class="listing-grid" id="myListingsGrid"></div>
+            <div class="listing-grid" id="myListingsGrid"><p style="color:var(--ink-soft)">Loading your listings...</p></div>
           </div>
 
           <div class="dash-panel" id="dp-addCrop">
@@ -496,84 +417,69 @@ table.ticker-table{font-family:var(--font-m);color:var(--ticker-text);min-width:
                 </div>
               </div>
               <div class="field"><label for="cNotes">Notes <span class="hint">(optional)</span></label><textarea id="cNotes" placeholder="Variety, harvest date, quality details..."></textarea></div>
-              <div class="field" id="geoField">
-                <label>Location <span class="hint">(optional — improves visibility for nearby dealers)</span></label>
-                <button type="button" class="btn btn-outline btn-sm" id="geoBtn" style="align-self:flex-start">📍 Use my location</button>
-                <span id="geoStatus" style="font-size:.8rem;color:var(--leaf)"></span>
-              </div>
               <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:.5rem">
-                <button class="btn btn-primary" id="submitCropBtn">Post to Firestore</button>
+                <button class="btn btn-primary" id="submitCropBtn">Post Listing</button>
                 <button class="btn btn-outline" id="cancelCropBtn">Cancel</button>
               </div>
             </div>
           </div>
 
           <div class="dash-panel" id="dp-farmerContacts">
-            <h2 style="margin-bottom:1.5rem">Contact Requests</h2>
-            <div id="contactRequestsList"><p style="color:var(--ink-soft)">Loading…</p></div>
+            <div class="section-toolbar"><h2><span class="live-dot"></span>Contact Requests</h2><button class="btn btn-outline btn-sm" onclick="loadFarmerContacts()">↻ Refresh</button></div>
+            <div id="contactRequestsList"><p style="color:var(--ink-soft)">Loading...</p></div>
           </div>
 
           <!-- RETAILER PANELS -->
           <div class="dash-panel" id="dp-retailerStatus">
-            <h2 style="margin-bottom:1rem">My Account Status</h2>
+            <h2 style="margin-bottom:1.5rem">My Account Status</h2>
             <div id="retailerStatusCard"></div>
-            <div class="mt-8">
-              <a href="#browse" data-page="browse" class="btn btn-primary">Browse All Listings →</a>
-            </div>
+            <div class="mt-8"><a href="#browse" data-page="browse" class="btn btn-primary">Browse All Listings →</a></div>
           </div>
 
           <div class="dash-panel" id="dp-myInterests">
-            <h2 style="margin-bottom:1.5rem">My Interest Requests</h2>
-            <div id="myInterestsList"><p style="color:var(--ink-soft)">Loading…</p></div>
+            <div class="section-toolbar"><h2><span class="live-dot"></span>My Interest Requests</h2><button class="btn btn-outline btn-sm" onclick="loadMyInterests()">↻ Refresh</button></div>
+            <div id="myInterestsList"><p style="color:var(--ink-soft)">Loading...</p></div>
           </div>
 
           <!-- ADMIN PANELS -->
           <div class="dash-panel" id="dp-adminStats">
-            <h2 style="margin-bottom:1.5rem">Platform Overview</h2>
+            <div class="section-toolbar"><h2><span class="live-dot"></span>Platform Overview</h2><button class="btn btn-outline btn-sm" onclick="loadAdminStats()">↻ Refresh</button></div>
             <div class="stat-grid" id="adminStatGrid"></div>
-            <p style="font-size:.82rem;color:var(--ink-soft);margin-top:1rem;border-left:3px solid var(--gold);padding-left:.8rem">
-              All numbers are live counts from Firestore collections — refresh the page for latest.
-            </p>
           </div>
 
           <div class="dash-panel" id="dp-adminPending">
-            <h2 style="margin-bottom:1.5rem">Pending Retailer Approvals</h2>
-            <div id="pendingRetailersList"></div>
+            <div class="section-toolbar"><h2>Pending Retailer Approvals</h2><button class="btn btn-outline btn-sm" onclick="loadPendingRetailers()">↻ Refresh</button></div>
+            <div id="pendingRetailersList"><p style="color:var(--ink-soft)">Loading...</p></div>
           </div>
 
           <div class="dash-panel" id="dp-adminUsers">
-            <h2 style="margin-bottom:1rem">All Users</h2>
-            <div style="display:flex;gap:.6rem;margin-bottom:1.25rem;flex-wrap:wrap">
-              <button class="btn btn-sm btn-outline" data-ufilter="">All</button>
-              <button class="btn btn-sm btn-outline" data-ufilter="farmer">Farmers</button>
-              <button class="btn btn-sm btn-outline" data-ufilter="retailer">Retailers</button>
+            <div class="section-toolbar"><h2>All Users</h2>
+              <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+                <button class="btn btn-sm btn-outline" onclick="loadAdminUsers('')">All</button>
+                <button class="btn btn-sm btn-outline" onclick="loadAdminUsers('farmer')">Farmers</button>
+                <button class="btn btn-sm btn-outline" onclick="loadAdminUsers('retailer')">Retailers</button>
+              </div>
             </div>
             <div style="overflow-x:auto">
-              <table class="data-table">
-                <thead><tr><th>Name</th><th>Phone</th><th>Role</th><th>District</th><th>Status</th><th>Action</th></tr></thead>
-                <tbody id="usersTableBody"></tbody>
-              </table>
+              <table class="data-table"><thead><tr><th>Name</th><th>Phone</th><th>Role</th><th>District</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody id="usersTableBody"></tbody></table>
             </div>
           </div>
 
           <div class="dash-panel" id="dp-adminListings">
-            <h2 style="margin-bottom:1.5rem">All Crop Listings</h2>
+            <div class="section-toolbar"><h2>All Listings</h2><button class="btn btn-outline btn-sm" onclick="loadAdminListings()">↻ Refresh</button></div>
             <div style="overflow-x:auto">
-              <table class="data-table">
-                <thead><tr><th>Crop</th><th>Qty</th><th>District</th><th>Farmer</th><th>Price</th><th>Status</th><th>Posted</th></tr></thead>
-                <tbody id="adminListingsBody"></tbody>
-              </table>
+              <table class="data-table"><thead><tr><th>Crop</th><th>Qty</th><th>District</th><th>Farmer</th><th>Price</th><th>Status</th><th>Posted</th></tr></thead>
+              <tbody id="adminListingsBody"></tbody></table>
             </div>
           </div>
 
           <div class="dash-panel" id="dp-adminCallLog">
-            <h2 style="margin-bottom:1.5rem">Interaction Log (Firestore)</h2>
-            <p style="font-size:.88rem;color:var(--ink-soft);margin-bottom:1.25rem">Every phone-reveal and interest request written to the <code>contacts</code> collection.</p>
+            <div class="section-toolbar"><h2>Interaction Log</h2><button class="btn btn-outline btn-sm" onclick="loadCallLog()">↻ Refresh</button></div>
+            <p style="font-size:.88rem;color:var(--ink-soft);margin-bottom:1.25rem">Every phone reveal and interest request — who contacted whom and when.</p>
             <div style="overflow-x:auto">
-              <table class="data-table">
-                <thead><tr><th>Retailer</th><th>Farmer</th><th>Crop</th><th>Type</th><th>Status</th><th>Time</th></tr></thead>
-                <tbody id="callLogBody"></tbody>
-              </table>
+              <table class="data-table"><thead><tr><th>Retailer</th><th>Farmer</th><th>Crop</th><th>Type</th><th>Status</th><th>Time</th></tr></thead>
+              <tbody id="callLogBody"></tbody></table>
             </div>
           </div>
 
@@ -582,29 +488,18 @@ table.ticker-table{font-family:var(--font-m);color:var(--ticker-text);min-width:
     </div>
   </section>
 </div>
-
 </main>
 
 <footer class="site-footer">
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <a href="#home" data-page="home" class="logo">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21V9"/><path d="M12 9c-3 0-5-2-5-5 3 0 5 2 5 5Z"/><path d="M12 13c3 0 5-2 5-5-3 0-5 2-5 5Z"/><path d="M12 17c-2.5 0-4-1.5-4-4 2.5 0 4 1.5 4 4Z"/></svg>FarmConnect
-        </a>
+        <a href="#home" data-page="home" class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V9"/><path d="M12 9c-3 0-5-2-5-5 3 0 5 2 5 5Z"/><path d="M12 13c3 0 5-2 5-5-3 0-5 2-5 5Z"/><path d="M12 17c-2.5 0-4-1.5-4-4 2.5 0 4 1.5 4 4Z"/></svg>FarmConnect</a>
         <p>Direct marketplace — faster sales, fair prices, no middlemen.</p>
       </div>
-      <div class="footer-col"><h4>Marketplace</h4>
-        <a href="#browse" data-page="browse">Browse Crops</a>
-        <a href="#prices" data-page="prices">Market Prices</a>
-        <a href="#auth" data-page="auth">List a Crop</a>
-      </div>
-      <div class="footer-col"><h4>Stack</h4>
-        <p>Firebase Auth</p><p>Firestore DB</p><p>Node.js + Express</p><p>Socket.io</p>
-      </div>
-      <div class="footer-col"><h4>Project</h4>
-        <p>PTMS Internship — Full Stack</p><p>Vizag Steel Plant (RINL)</p><p>Built by [Your Name]</p>
-      </div>
+      <div class="footer-col"><h4>Marketplace</h4><a href="#browse" data-page="browse">Browse Crops</a><a href="#prices" data-page="prices">Market Prices</a><a href="#auth" data-page="auth">List a Crop</a></div>
+      <div class="footer-col"><h4>Stack</h4><p>Firebase Auth</p><p>Firestore DB</p><p>Node.js + Express</p></div>
+      <div class="footer-col"><h4>Project</h4><p>PTMS Internship — Full Stack</p><p>Vizag Steel Plant (RINL)</p><p>Built by SriHarineesh</p></div>
     </div>
     <div class="footer-bottom">
       <span>© <span id="year"></span> FarmConnect — internship project.</span>
@@ -615,9 +510,7 @@ table.ticker-table{font-family:var(--font-m);color:var(--ticker-text);min-width:
 
 <script>
 /* ============================================================
-   STEP 1 — PASTE YOUR FIREBASE CONFIG HERE
-   Firebase Console → Project Settings → Your apps → Web app
-   → Firebase SDK snippet → Config
+   STEP 1 — YOUR FIREBASE CONFIG
    ============================================================ */
 const FIREBASE_CONFIG = {
   apiKey:            "AIzaSyBjpCIcta7ZIgAdBTRhR9jb6Mkm6-dTask",
@@ -629,120 +522,88 @@ const FIREBASE_CONFIG = {
 };
 
 /* ============================================================
-   STEP 2 — POINT TO YOUR EXPRESS BACKEND
-   Change this when you deploy (e.g. https://farmconnect.onrender.com)
+   STEP 2 — YOUR RENDER BACKEND URL
+   Change this after Render deploys successfully
    ============================================================ */
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "https://farmconnect-api-d2f5.onrender.com/api";
 
-/* ─────────────────────────────────────────────────────────────
-   Firebase Initialisation
-───────────────────────────────────────────────────────────── */
-let firebaseApp  = null;
-let fbAuth       = null;
-let firebaseReady = false;
-
+/* ─── Firebase Init ─── */
+let firebaseApp = null, fbAuth = null, firebaseReady = false;
 try {
-  if (FIREBASE_CONFIG.apiKey === "YOUR_API_KEY") {
-    console.warn("Firebase config not set — running in demo mode");
-    document.getElementById("fbWarning").classList.add("show");
-  } else {
-    firebaseApp   = firebase.initializeApp(FIREBASE_CONFIG);
-    fbAuth        = firebase.auth();
-    firebaseReady = true;
+  firebaseApp  = firebase.initializeApp(FIREBASE_CONFIG);
+  fbAuth       = firebase.auth();
+  firebaseReady = true;
+  fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+} catch(e) { console.error("Firebase init error:", e); }
 
-    // Persist auth session across browser refreshes
-    fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-  }
-} catch (e) {
-  console.error("Firebase init error:", e);
-  document.getElementById("fbWarning").classList.add("show");
-}
-
-/* ─────────────────────────────────────────────────────────────
-   App State
-───────────────────────────────────────────────────────────── */
-let currentUser  = null;   // Firestore profile object
-let fbUser       = null;   // Firebase Auth user object
-let idToken      = null;   // Firebase ID token for API calls
+/* ─── App State ─── */
+let currentUser = null, fbUser = null, idToken = null;
 let cropGeoLocation = null;
 
-/* ─────────────────────────────────────────────────────────────
-   API Helper — always sends Firebase ID token as Bearer
-───────────────────────────────────────────────────────────── */
+/* ─── API helper ─── */
 async function api(path, options = {}) {
-  // Always fetch a fresh token (Firebase auto-refreshes if expired)
   if (fbUser) {
-    idToken = await fbUser.getIdToken();
+    try { idToken = await fbUser.getIdToken(false); } catch(e) {}
   }
   const headers = { "Content-Type": "application/json", ...options.headers };
   if (idToken) headers["Authorization"] = `Bearer ${idToken}`;
   if (options.body && typeof options.body === "object") options.body = JSON.stringify(options.body);
-
   const res  = await fetch(API_BASE + path, { ...options, headers });
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || `HTTP ${res.status}`);
   return data;
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Toast Notifications
-───────────────────────────────────────────────────────────── */
+/* ─── Toasts ─── */
 function toast(msg, type = "success") {
   const el = document.createElement("div");
-  el.className = `toast${type === "error" ? " toast-error" : type === "gold" ? " toast-gold" : ""}`;
+  el.className = `toast${type==="error"?" toast-error":type==="gold"?" toast-gold":""}`;
   el.textContent = msg;
   document.getElementById("toastContainer").appendChild(el);
-  setTimeout(() => el.remove(), 3800);
+  setTimeout(() => el.remove(), 4000);
 }
-function showFormError(id, msg) {
-  const el = document.getElementById(id);
-  if (el) { el.textContent = msg; el.classList.add("is-visible"); }
-}
-function clearFormMsg(...ids) {
-  ids.forEach((id) => { const el = document.getElementById(id); if (el) el.classList.remove("is-visible"); });
-}
+function showFormError(id, msg) { const el=document.getElementById(id); if(el){el.textContent=msg;el.classList.add("is-visible");} }
+function clearFormMsg(...ids) { ids.forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove("is-visible");}); }
 function setLoading(on) { document.getElementById("loadingOverlay").classList.toggle("show", on); }
 
-/* ─────────────────────────────────────────────────────────────
-   Page Router
-───────────────────────────────────────────────────────────── */
-const PAGES = ["home", "auth", "browse", "prices", "dashboard"];
-const PAGE_TITLES = {
-  home:"FarmConnect — Direct Crop Marketplace",
-  auth:"Login / Sign Up — FarmConnect",
-  browse:"Browse Crops — FarmConnect",
-  prices:"Market Prices — FarmConnect",
-  dashboard:"Dashboard — FarmConnect",
-};
+/* ─── Format date from Firestore Timestamp ─── */
+function formatDate(ts) {
+  if (!ts) return "—";
+  const d = ts._seconds ? new Date(ts._seconds * 1000) : new Date(ts);
+  return d.toLocaleDateString("en-IN", { day:"numeric", month:"short", year:"numeric" });
+}
+function formatDateTime(ts) {
+  if (!ts) return "—";
+  const d = ts._seconds ? new Date(ts._seconds * 1000) : new Date(ts);
+  return d.toLocaleString("en-IN");
+}
 
+/* ─── Page Router ─── */
+const PAGES = ["home","auth","browse","prices","dashboard"];
 function showPage(id, skipScroll) {
   if (!PAGES.includes(id)) id = "home";
   if (id === "dashboard" && !currentUser) { showPage("auth"); return; }
-  PAGES.forEach((p) => {
+  PAGES.forEach(p => {
     const el = document.getElementById("page-" + p);
     if (el) el.classList.toggle("is-active", p === id);
   });
-  document.querySelectorAll(".nav a[data-page]").forEach((a) => {
-    a.classList.toggle("is-active", a.dataset.page === id);
-  });
-  document.title = PAGE_TITLES[id] || PAGE_TITLES.home;
+  document.querySelectorAll(".nav a[data-page]").forEach(a => a.classList.toggle("is-active", a.dataset.page === id));
   document.querySelector(".nav")?.classList.remove("is-open");
   if (!skipScroll) window.scrollTo(0, 0);
-
   if (id === "browse")    loadBrowse();
   if (id === "prices")    loadPrices();
   if (id === "dashboard") initDashboard();
 }
 
 function initRouter() {
-  document.querySelectorAll("[data-page]").forEach((el) => {
-    if (el.tagName === "DIV") return; // skip page containers
-    el.addEventListener("click", (e) => {
+  document.querySelectorAll("[data-page]").forEach(el => {
+    if (el.classList.contains("page")) return;
+    el.addEventListener("click", e => {
       e.preventDefault();
-      const id   = el.dataset.page;
+      const id = el.dataset.page;
       const role = el.dataset.role;
       if (role) {
-        document.querySelectorAll(".role-pill").forEach((p) => p.classList.toggle("selected", p.dataset.role === role));
+        document.querySelectorAll(".role-pill").forEach(p => p.classList.toggle("selected", p.dataset.role === role));
         document.getElementById("retailerFields").style.display = role === "retailer" ? "block" : "none";
       }
       history.pushState({ page: id }, "", "#" + id);
@@ -753,116 +614,163 @@ function initRouter() {
   showPage((window.location.hash || "#home").slice(1), true);
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Auth State Observer — Firebase tells us when login state changes
-───────────────────────────────────────────────────────────── */
-function initFirebaseAuthObserver() {
-  if (!fbAuth) return;
-
-  fbAuth.onAuthStateChanged(async (user) => {
-    if (user) {
-      fbUser  = user;
-      idToken = await user.getIdToken();
-      try {
-        // Load the user's Firestore profile from our backend
-        const data = await api("/auth/me");
-        currentUser = data.user;
-        updateAuthUI();
-        // Notify backend to record last login time
-        await api("/auth/update-last-login", { method: "POST" });
-      } catch (err) {
-        // Profile might not exist yet (mid-registration race condition) — ignore
-        console.warn("Could not load user profile:", err.message);
-      }
-    } else {
-      fbUser = null; idToken = null; currentUser = null;
-      updateAuthUI();
-    }
+/* ─── Mobile Nav ─── */
+function initNav() {
+  const toggle = document.querySelector(".nav-toggle");
+  const nav = document.querySelector(".nav");
+  if (toggle && nav) toggle.addEventListener("click", () => {
+    const open = nav.classList.toggle("is-open");
+    toggle.setAttribute("aria-expanded", String(open));
   });
+  document.getElementById("year").textContent = new Date().getFullYear();
 }
 
+/* ─── Update Header UI based on login state ─── */
 function updateAuthUI() {
   const badge    = document.getElementById("userBadge");
   const loginBtn = document.getElementById("loginNavBtn");
   const logoutBtn = document.getElementById("logoutBtn");
   const dashItem  = document.getElementById("dashNavItem");
   if (currentUser) {
-    badge.textContent = `${currentUser.role.toUpperCase()} · ${currentUser.name.split(" ")[0]}`;
+    const roleIcon = currentUser.role === "admin" ? "⚙" : currentUser.role === "retailer" ? "🏪" : "🌾";
+    badge.textContent = `${roleIcon} ${currentUser.role.toUpperCase()} · ${currentUser.name.split(" ")[0]}`;
     badge.style.display = "inline";
-    loginBtn.style.display  = "none";
+    loginBtn.style.display = "none";
     logoutBtn.style.display = "inline-flex";
     if (dashItem) dashItem.style.display = "block";
   } else {
     badge.style.display = "none";
-    loginBtn.style.display  = "inline-flex";
+    loginBtn.style.display = "inline-flex";
     logoutBtn.style.display = "none";
     if (dashItem) dashItem.style.display = "none";
   }
 }
 
+/* ─── Firebase Auth Observer ─── */
+function initFirebaseAuthObserver() {
+  if (!fbAuth) return;
+  fbAuth.onAuthStateChanged(async user => {
+    if (user) {
+      fbUser  = user;
+      idToken = await user.getIdToken();
+      try {
+        const data = await api("/auth/me");
+        currentUser = data.user;
+        // Save to sessionStorage as backup
+        sessionStorage.setItem("fc_user", JSON.stringify(currentUser));
+        updateAuthUI();
+        // If user is on auth or home page, redirect to their dashboard
+        const currentPage = (window.location.hash || "#home").slice(1);
+        if (currentPage === "auth" || currentPage === "home") {
+          setTimeout(() => showPage("dashboard"), 300);
+        }
+        // Record last login
+        api("/auth/update-last-login", { method: "POST" }).catch(() => {});
+      } catch (err) {
+        console.warn("Profile load error:", err.message);
+        // Try sessionStorage fallback
+        const stored = sessionStorage.getItem("fc_user");
+        if (stored) {
+          currentUser = JSON.parse(stored);
+          updateAuthUI();
+        }
+      }
+    } else {
+      fbUser = null; idToken = null; currentUser = null;
+      sessionStorage.removeItem("fc_user");
+      updateAuthUI();
+    }
+  });
+}
+
+/* ─── Logout ─── */
 async function logout() {
   setLoading(true);
   try {
     if (fbAuth) await fbAuth.signOut();
     currentUser = null; fbUser = null; idToken = null;
+    sessionStorage.removeItem("fc_user");
     updateAuthUI();
     showPage("home");
     toast("Logged out successfully");
-  } catch (err) {
-    toast(err.message, "error");
-  } finally { setLoading(false); }
+  } catch (err) { toast(err.message, "error"); }
+  finally { setLoading(false); }
 }
 document.getElementById("logoutBtn").addEventListener("click", logout);
+document.getElementById("loginNavBtn").addEventListener("click", () => showPage("auth"));
 
-/* ─────────────────────────────────────────────────────────────
-   Auth — Login
-───────────────────────────────────────────────────────────── */
-async function doLogin() {
-  clearFormMsg("loginError", "loginSuccess");
-  const phone    = document.getElementById("loginPhone").value.trim();
-  const password = document.getElementById("loginPass").value;
-
-  if (!phone || !password) { showFormError("loginError", "Enter your phone number and password."); return; }
-  if (!/^[6-9]\d{9}$/.test(phone)) { showFormError("loginError", "Enter a valid 10-digit mobile number."); return; }
-
-  const email = `${phone}@farmconnect.in`; // Firebase Auth uses email format
-
-  setLoading(true);
-  try {
-    if (!firebaseReady) {
-      // Demo mode fallback
-      const demoMap = {
-        "9000000001": { role:"farmer",   name:"Demo Farmer",   isVerified:true, district:"Guntur",       uid:"demo1", phone:"9000000001" },
-        "9000000002": { role:"retailer", name:"Demo Retailer", isVerified:true, district:"Krishna",      uid:"demo2", phone:"9000000002" },
-        "9000000003": { role:"admin",    name:"Admin User",    isVerified:true, district:"Visakhapatnam",uid:"demo3", phone:"9000000003" },
-      };
-      const demoUser = demoMap[phone];
-      if (demoUser && password === "demo123") {
-        currentUser = demoUser;
-        updateAuthUI();
-        toast(`Welcome ${demoUser.name}! (Demo mode)`);
-        showPage("dashboard");
-      } else {
-        showFormError("loginError", "Demo credentials: phone 9000000001/2/3, password demo123");
-      }
-      return;
-    }
-
-    await fbAuth.signInWithEmailAndPassword(email, password);
-    // onAuthStateChanged will fire and load the Firestore profile automatically
-    toast("Logged in — welcome back!");
-    setTimeout(() => showPage("dashboard"), 600);
-  } catch (err) {
-    const msg = err.code === "auth/user-not-found" || err.code === "auth/wrong-password"
-      ? "Incorrect phone number or password"
-      : err.message;
-    showFormError("loginError", msg);
-  } finally { setLoading(false); }
+/* ─── Auth Page Tabs ─── */
+function initAuthPage() {
+  document.querySelectorAll(".auth-tab").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const tab = btn.dataset.tab; if (!tab) return;
+      document.querySelectorAll(".auth-tab").forEach(t => t.classList.toggle("is-active", t.dataset.tab === tab));
+      document.querySelectorAll(".auth-panel").forEach(p => p.classList.toggle("is-active", p.id === "panel-" + tab));
+    });
+  });
+  document.querySelectorAll(".role-pill").forEach(pill => {
+    pill.addEventListener("click", () => {
+      document.querySelectorAll(".role-pill").forEach(p => p.classList.remove("selected"));
+      pill.classList.add("selected");
+      document.getElementById("retailerFields").style.display = pill.dataset.role === "retailer" ? "block" : "none";
+    });
+  });
+  document.getElementById("loginBtn").addEventListener("click", doLogin);
+  document.getElementById("signupBtn").addEventListener("click", doSignup);
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Auth — Sign Up
-───────────────────────────────────────────────────────────── */
+/* ─── Firebase error messages in plain English ─── */
+function firebaseErrMsg(code) {
+  const map = {
+    "auth/user-not-found":      "No account found with this phone/email. Please sign up.",
+    "auth/wrong-password":      "Incorrect password. Please try again.",
+    "auth/invalid-credential":  "Incorrect phone/email or password.",
+    "auth/invalid-email":       "Please enter a valid email or 10-digit phone number.",
+    "auth/too-many-requests":   "Too many failed attempts. Please wait a few minutes.",
+    "auth/email-already-in-use":"This phone number is already registered. Please login.",
+    "auth/weak-password":       "Password must be at least 6 characters.",
+    "auth/network-request-failed": "Network error — check your internet connection.",
+  };
+  return map[code] || "Something went wrong. Please try again.";
+}
+
+/* ─── LOGIN ─── */
+async function doLogin() {
+  clearFormMsg("loginError", "loginSuccess");
+  const input    = document.getElementById("loginInput").value.trim();
+  const password = document.getElementById("loginPass").value;
+
+  if (!input || !password) { showFormError("loginError", "Please enter your phone/email and password."); return; }
+
+  // Support both phone number and email login
+  let email;
+  if (input.includes("@")) {
+    email = input.toLowerCase(); // already an email
+  } else if (/^[6-9]\d{9}$/.test(input)) {
+    email = `${input}@farmconnect.in`; // phone → convert to email format
+  } else {
+    showFormError("loginError", "Enter a valid 10-digit phone number or email address.");
+    return;
+  }
+
+  setLoading(true);
+  const loginBtn = document.getElementById("loginBtn");
+  loginBtn.disabled = true; loginBtn.textContent = "Logging in...";
+
+  try {
+    await fbAuth.signInWithEmailAndPassword(email, password);
+    // onAuthStateChanged handles profile load + redirect automatically
+    document.getElementById("loginSuccess").textContent = "Login successful! Loading your dashboard...";
+    document.getElementById("loginSuccess").classList.add("is-visible");
+  } catch (err) {
+    showFormError("loginError", firebaseErrMsg(err.code));
+  } finally {
+    setLoading(false);
+    loginBtn.disabled = false; loginBtn.textContent = "Login →";
+  }
+}
+
+/* ─── SIGNUP ─── */
 async function doSignup() {
   clearFormMsg("signupError");
   const role         = document.querySelector(".role-pill.selected")?.dataset.role || "farmer";
@@ -873,129 +781,80 @@ async function doSignup() {
   const businessName = document.getElementById("signupBusiness")?.value.trim() || "";
   const govtIdNumber = document.getElementById("signupGovtId")?.value.trim()   || "";
 
-  if (!name || !phone || !district || !password) {
-    showFormError("signupError", "Please fill in all required fields."); return;
-  }
-  if (!/^[6-9]\d{9}$/.test(phone)) {
-    showFormError("signupError", "Enter a valid 10-digit mobile number."); return;
-  }
-  if (password.length < 6) {
-    showFormError("signupError", "Password must be at least 6 characters."); return;
-  }
-  if (role === "retailer" && !govtIdNumber) {
-    showFormError("signupError", "Retailers must provide a Govt ID number."); return;
-  }
+  if (!name) { showFormError("signupError", "Please enter your full name."); return; }
+  if (!phone || !/^[6-9]\d{9}$/.test(phone)) { showFormError("signupError", "Enter a valid 10-digit mobile number starting with 6, 7, 8, or 9."); return; }
+  if (!district) { showFormError("signupError", "Please select your district."); return; }
+  if (password.length < 6) { showFormError("signupError", "Password must be at least 6 characters."); return; }
+  if (role === "retailer" && !govtIdNumber) { showFormError("signupError", "Retailers must provide a Govt ID number for admin verification."); return; }
 
   const email = `${phone}@farmconnect.in`;
-
   setLoading(true);
-  try {
-    if (!firebaseReady) {
-      showFormError("signupError", "Firebase not configured — cannot register in demo mode.");
-      return;
-    }
+  const signupBtn = document.getElementById("signupBtn");
+  signupBtn.disabled = true; signupBtn.textContent = "Creating account...";
 
-    // Step 1: Create the Firebase Auth user (stores credentials securely in Firebase)
+  try {
+    // Step 1: Create Firebase Auth user
     const credential = await fbAuth.createUserWithEmailAndPassword(email, password);
     const uid = credential.user.uid;
-
-    // Step 2: Update Firebase Auth display name
     await credential.user.updateProfile({ displayName: name });
 
-    // Step 3: POST profile data to our Express backend → saved in Firestore users/{uid}
+    // Step 2: Save profile to Firestore via backend
     await api("/auth/register", {
       method: "POST",
       body: { uid, name, phone, role, district, businessName, govtIdNumber },
     });
 
     if (role === "retailer") {
-      // Retailers need admin approval — sign them out immediately, show message
       await fbAuth.signOut();
-      toast("Account created! Admin will verify your ID before you can contact farmers.", "gold");
-      // Switch back to login tab
-      document.querySelectorAll(".auth-tab").forEach((t) => t.classList.toggle("is-active", t.dataset.tab === "login"));
-      document.querySelectorAll(".auth-panel").forEach((p) => p.classList.toggle("is-active", p.id === "panel-login"));
+      toast("Account created! Admin will verify your ID — then you can contact farmers.", "gold");
+      // Switch to login tab
+      document.querySelectorAll(".auth-tab").forEach(t => t.classList.toggle("is-active", t.dataset.tab === "login"));
+      document.querySelectorAll(".auth-panel").forEach(p => p.classList.toggle("is-active", p.id === "panel-login"));
+      document.getElementById("loginInput").value = phone;
     } else {
-      // Farmers are auto-approved — onAuthStateChanged will load their profile
-      toast("Account created! Welcome to FarmConnect.");
-      setTimeout(() => showPage("dashboard"), 600);
+      toast("Account created! Welcome to FarmConnect 🌾");
+      // onAuthStateChanged will fire and redirect to dashboard
     }
   } catch (err) {
-    const msg = err.code === "auth/email-already-in-use"
-      ? "This phone number is already registered. Please login."
-      : err.message;
-    showFormError("signupError", msg);
-    // If Firestore write failed after Auth created the user, clean up the Auth user
+    showFormError("signupError", firebaseErrMsg(err.code) || err.message);
+    // Clean up Firebase Auth user if Firestore write failed
     if (fbAuth?.currentUser) await fbAuth.currentUser.delete().catch(() => {});
-  } finally { setLoading(false); }
+  } finally {
+    setLoading(false);
+    signupBtn.disabled = false; signupBtn.textContent = "Create Account →";
+  }
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Auth page tabs + role pills
-───────────────────────────────────────────────────────────── */
-function initAuthPage() {
-  document.querySelectorAll(".auth-tab").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const tab = btn.dataset.tab; if (!tab) return;
-      document.querySelectorAll(".auth-tab").forEach((t) => t.classList.toggle("is-active", t.dataset.tab === tab));
-      document.querySelectorAll(".auth-panel").forEach((p) => p.classList.toggle("is-active", p.id === "panel-" + tab));
-    });
-  });
-  document.querySelectorAll(".role-pill").forEach((pill) => {
-    pill.addEventListener("click", () => {
-      document.querySelectorAll(".role-pill").forEach((p) => p.classList.remove("selected"));
-      pill.classList.add("selected");
-      document.getElementById("retailerFields").style.display = pill.dataset.role === "retailer" ? "block" : "none";
-    });
-  });
-  document.getElementById("loginBtn").addEventListener("click", doLogin);
-  document.getElementById("signupBtn").addEventListener("click", doSignup);
-  document.getElementById("loginNavBtn").addEventListener("click", () => showPage("auth"));
-}
-
-/* ─────────────────────────────────────────────────────────────
-   Ticker / Prices — fetched from Express → /api/prices
-───────────────────────────────────────────────────────────── */
-let cachedPrices = [];
+/* ─── Prices ─── */
+const MOCK_PRICES = [
+  {crop:"Wheat",unit:"Quintal",price:2180,change:1.4},{crop:"Rice (Paddy)",unit:"Quintal",price:2040,change:-0.6},
+  {crop:"Maize",unit:"Quintal",price:1950,change:0.9},{crop:"Soybean",unit:"Quintal",price:4320,change:2.1},
+  {crop:"Cotton",unit:"Quintal",price:6800,change:-1.2},{crop:"Groundnut",unit:"Quintal",price:5780,change:0.5},
+  {crop:"Bajra",unit:"Quintal",price:2350,change:0.3},{crop:"Jowar",unit:"Quintal",price:2970,change:-0.8},
+  {crop:"Onion",unit:"Quintal",price:1400,change:3.6},{crop:"Tomato",unit:"Quintal",price:1120,change:-2.4},
+  {crop:"Potato",unit:"Quintal",price:1210,change:0.7},{crop:"Turmeric",unit:"Quintal",price:16200,change:1.1},
+];
 
 function renderTicker(tbodyId, prices, limit) {
   const tbody = document.getElementById(tbodyId); if (!tbody) return;
-  const rows = (limit ? prices.slice(0, limit) : prices).map((r) => {
+  const rows = (limit ? prices.slice(0, limit) : prices).map(r => {
     const up = r.change >= 0;
-    return `<tr>
-      <td class="crop-name">${r.crop}<span class="unit-tag">/${r.unit}</span></td>
-      <td>₹${Number(r.price).toLocaleString("en-IN")}</td>
-      <td class="${up ? "price-up" : "price-down"}">${up ? "▲" : "▼"} ${Math.abs(r.change).toFixed(1)}%</td>
-    </tr>`;
+    return `<tr><td class="crop-name">${r.crop}<span class="unit-tag">/${r.unit}</span></td><td>₹${Number(r.price).toLocaleString("en-IN")}</td><td class="${up?"price-up":"price-down"}">${up?"▲":"▼"} ${Math.abs(r.change).toFixed(1)}%</td></tr>`;
   });
   tbody.innerHTML = rows.join("");
 }
 
 async function loadPrices() {
-  try {
-    const data = await api("/prices");
-    cachedPrices = data.prices;
-  } catch (_) {
-    // Fallback mock data when backend is offline
-    cachedPrices = [
-      {crop:"Wheat",unit:"Quintal",price:2180,change:1.4},{crop:"Rice (Paddy)",unit:"Quintal",price:2040,change:-0.6},
-      {crop:"Maize",unit:"Quintal",price:1950,change:0.9},{crop:"Soybean",unit:"Quintal",price:4320,change:2.1},
-      {crop:"Cotton",unit:"Quintal",price:6800,change:-1.2},{crop:"Groundnut",unit:"Quintal",price:5780,change:0.5},
-      {crop:"Bajra",unit:"Quintal",price:2350,change:0.3},{crop:"Jowar",unit:"Quintal",price:2970,change:-0.8},
-      {crop:"Onion",unit:"Quintal",price:1400,change:3.6},{crop:"Tomato",unit:"Quintal",price:1120,change:-2.4},
-      {crop:"Potato",unit:"Quintal",price:1210,change:0.7},{crop:"Turmeric",unit:"Quintal",price:16200,change:1.1},
-    ];
-  }
-  renderTicker("homeTickerBody", cachedPrices, 6);
-  renderTicker("fullTickerBody", cachedPrices, null);
+  let prices = MOCK_PRICES;
+  try { const d = await api("/prices"); prices = d.prices; } catch(_) {}
+  renderTicker("homeTickerBody", prices, 6);
+  renderTicker("fullTickerBody", prices, null);
   const ts = document.getElementById("priceTimestamp");
   if (ts) ts.innerHTML = `Updated: <strong>${new Date().toLocaleTimeString("en-IN")}</strong>`;
 }
 document.getElementById("refreshPricesBtn").addEventListener("click", loadPrices);
 
-/* ─────────────────────────────────────────────────────────────
-   Browse — live from Firestore via Express
-───────────────────────────────────────────────────────────── */
+/* ─── Browse ─── */
 const MOCK_LISTINGS = [
   {id:"m1",cropName:"Wheat",quantity:80,unit:"Quintal",district:"Guntur",village:"Tenali",farmerName:"Ramesh K.",farmerPhone:"+91 90000 00011",pricePerUnit:2100,status:"active",createdAt:new Date(Date.now()-86400000).toISOString()},
   {id:"m2",cropName:"Rice (Paddy)",quantity:150,unit:"Quintal",district:"East Godavari",farmerName:"Lakshmi N.",farmerPhone:"+91 90000 00022",status:"active",createdAt:new Date().toISOString()},
@@ -1009,45 +868,30 @@ async function loadBrowse() {
   const cropFilter     = document.getElementById("bCrop").value;
   const districtFilter = document.getElementById("bDistrict").value;
   const minQty         = Number(document.getElementById("bMinQty").value) || 0;
-
   let listings = MOCK_LISTINGS;
   try {
     const qs = new URLSearchParams({ limit: 50 });
-    if (cropFilter)     qs.set("crop",     cropFilter);
+    if (cropFilter) qs.set("crop", cropFilter);
     if (districtFilter) qs.set("district", districtFilter);
-    if (minQty)         qs.set("minQty",   minQty);
+    if (minQty) qs.set("minQty", minQty);
     const data = await api("/crops?" + qs);
     listings = data.crops;
-  } catch (_) {
-    listings = MOCK_LISTINGS.filter((l) =>
-      (!cropFilter     || l.cropName === cropFilter) &&
-      (!districtFilter || l.district === districtFilter) &&
-      l.quantity >= minQty
-    );
+  } catch(_) {
+    listings = MOCK_LISTINGS.filter(l => (!cropFilter || l.cropName === cropFilter) && (!districtFilter || l.district === districtFilter) && l.quantity >= minQty);
   }
-
   const grid = document.getElementById("browseGrid");
   const meta = document.getElementById("browseResultsMeta");
   meta.textContent = `Showing ${listings.length} listing${listings.length !== 1 ? "s" : ""}`;
-
-  if (!listings.length) {
-    grid.innerHTML = `<div class="empty-state"><p><strong>No matching listings.</strong><br>Try adjusting the filters above.</p></div>`;
-    return;
-  }
-
   const isVerifiedRetailer = currentUser?.role === "retailer" && currentUser?.isVerified;
   const isAdmin = currentUser?.role === "admin";
-
-  grid.innerHTML = listings.map((l) => {
+  if (!listings.length) { grid.innerHTML = `<div class="empty-state"><p><strong>No listings found.</strong><br>Try adjusting the filters.</p></div>`; return; }
+  grid.innerHTML = listings.map(l => {
     const timeAgo = Math.floor((Date.now() - new Date(l.createdAt)) / 86400000);
     const showPhone = isVerifiedRetailer || isAdmin;
     return `<article class="listing-card">
-      <div class="crop-tag">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 19c0-7 4-13 14-14-1 10-7 14-14 14Z"/></svg>
-        ${l.cropName}
-      </div>
+      <div class="crop-tag"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 19c0-7 4-13 14-14-1 10-7 14-14 14Z"/></svg>${l.cropName}</div>
       <div class="qty">${l.quantity} ${l.unit}</div>
-      ${l.pricePerUnit ? `<div class="price-tag">₹${l.pricePerUnit.toLocaleString("en-IN")}/${l.unit}</div>` : ""}
+      ${l.pricePerUnit ? `<div class="price-tag">₹${Number(l.pricePerUnit).toLocaleString("en-IN")}/${l.unit}</div>` : ""}
       <div class="meta">📍 ${l.village ? l.village + ", " : ""}${l.district}</div>
       <div class="meta">👤 ${l.farmerName}</div>
       ${showPhone
@@ -1063,15 +907,12 @@ async function loadBrowse() {
 
 async function sendInterest(cropId, btn) {
   if (!currentUser) { showPage("auth"); return; }
-  btn.disabled = true; btn.textContent = "Sending…";
+  btn.disabled = true; btn.textContent = "Sending...";
   try {
     await api(`/contacts/interest/${cropId}`, { method: "POST", body: { message: "I am interested in this crop." } });
     btn.textContent = "Sent ✓"; btn.className = "btn btn-outline btn-sm";
     toast("Interest request sent to farmer!");
-  } catch (err) {
-    toast(err.message, "error");
-    btn.disabled = false; btn.textContent = "Send Interest Request";
-  }
+  } catch (err) { toast(err.message, "error"); btn.disabled = false; btn.textContent = "Send Interest Request"; }
 }
 
 document.getElementById("bSearch").addEventListener("click", loadBrowse);
@@ -1082,34 +923,40 @@ document.getElementById("bReset").addEventListener("click", () => {
   loadBrowse();
 });
 
-/* ─────────────────────────────────────────────────────────────
-   Dashboard — role-based panels
-───────────────────────────────────────────────────────────── */
+/* ─── Dashboard ─── */
 const ROLE_PANELS = {
   farmer: [
-    {id:"myListings",     label:"My Listings",       icon:'<path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/>'},
-    {id:"addCrop",        label:"Add Listing",        icon:'<path d="M12 5v14"/><path d="M5 12h14"/>'},
-    {id:"farmerContacts", label:"Contact Requests",   icon:'<path d="M5 4h3.4l1.6 4.6-2.2 1.8a13 13 0 0 0 6 6l1.8-2.2L20 16v3.4a1.6 1.6 0 0 1-1.7 1.6A16 16 0 0 1 3.4 5.7 1.6 1.6 0 0 1 5 4Z"/>'},
+    {id:"myListings",    label:"My Listings",         icon:'<path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/>'},
+    {id:"addCrop",       label:"➕ Add Crop Listing",  icon:'<path d="M12 5v14"/><path d="M5 12h14"/>'},
+    {id:"farmerContacts",label:"Contact Requests",    icon:'<path d="M5 4h3.4l1.6 4.6-2.2 1.8a13 13 0 0 0 6 6l1.8-2.2L20 16v3.4a1.6 1.6 0 0 1-1.7 1.6A16 16 0 0 1 3.4 5.7 1.6 1.6 0 0 1 5 4Z"/>'},
   ],
   retailer: [
-    {id:"retailerStatus", label:"Account Status",     icon:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/>'},
-    {id:"myInterests",    label:"My Interest Requests",icon:'<path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/>'},
+    {id:"retailerStatus",label:"Account Status",      icon:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/>'},
+    {id:"myInterests",   label:"My Interest Requests",icon:'<path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/>'},
   ],
   admin: [
-    {id:"adminStats",    label:"Overview",            icon:'<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>'},
-    {id:"adminPending",  label:"Pending Approvals",   icon:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/>'},
-    {id:"adminUsers",    label:"All Users",           icon:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>'},
-    {id:"adminListings", label:"All Listings",        icon:'<path d="M5 19c0-7 4-13 14-14-1 10-7 14-14 14Z"/>'},
-    {id:"adminCallLog",  label:"Interaction Log",     icon:'<path d="M5 4h3.4l1.6 4.6-2.2 1.8a13 13 0 0 0 6 6l1.8-2.2L20 16v3.4a1.6 1.6 0 0 1-1.7 1.6A16 16 0 0 1 3.4 5.7 1.6 1.6 0 0 1 5 4Z"/>'},
+    {id:"adminStats",   label:"📊 Overview",          icon:'<rect x="2" y="3" width="20" height="14" rx="2"/>'},
+    {id:"adminPending", label:"⏳ Pending Approvals",  icon:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/>'},
+    {id:"adminUsers",   label:"👥 All Users",          icon:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>'},
+    {id:"adminListings",label:"🌾 All Listings",       icon:'<path d="M5 19c0-7 4-13 14-14-1 10-7 14-14 14Z"/>'},
+    {id:"adminCallLog", label:"📋 Interaction Log",    icon:'<path d="M5 4h3.4l1.6 4.6-2.2 1.8a13 13 0 0 0 6 6l1.8-2.2L20 16v3.4a1.6 1.6 0 0 1-1.7 1.6A16 16 0 0 1 3.4 5.7 1.6 1.6 0 0 1 5 4Z"/>'},
   ],
 };
 
 function initDashboard() {
   if (!currentUser) return;
   const role = currentUser.role;
-  document.getElementById("dashRoleEyebrow").textContent = role.charAt(0).toUpperCase() + role.slice(1) + " Dashboard";
-  document.getElementById("dashTitle").textContent = `Welcome, ${currentUser.name.split(" ")[0]}`;
 
+  // Welcome card
+  const roleLabel = role === "admin" ? "⚙ Admin" : role === "retailer" ? "🏪 Dealer" : "🌾 Farmer";
+  document.getElementById("dashWelcome").innerHTML = `
+    <div class="welcome-card">
+      <div class="role-badge">${roleLabel} Dashboard</div>
+      <h2>Welcome back, ${currentUser.name.split(" ")[0]}!</h2>
+      <p>${role === "admin" ? "Manage users, listings, and all platform activity." : role === "retailer" ? `Account status: ${currentUser.isVerified ? "✅ Verified — you can contact farmers" : "⏳ Pending admin verification"}` : `District: ${currentUser.district} · Phone: ${currentUser.phone}`}</p>
+    </div>`;
+
+  // Build sidebar
   const sidebarNav = document.getElementById("dashSidebarNav");
   sidebarNav.innerHTML = "";
   (ROLE_PANELS[role] || []).forEach((p, i) => {
@@ -1125,131 +972,95 @@ function initDashboard() {
 }
 
 function switchPanel(id) {
-  document.querySelectorAll(".dash-panel").forEach((p) => p.classList.remove("is-active"));
-  document.querySelectorAll(".dash-nav-link").forEach((b) => b.classList.toggle("is-active", b.dataset.panel === id));
+  document.querySelectorAll(".dash-panel").forEach(p => p.classList.remove("is-active"));
+  document.querySelectorAll(".dash-nav-link").forEach(b => b.classList.toggle("is-active", b.dataset.panel === id));
   const el = document.getElementById("dp-" + id);
   if (el) { el.classList.add("is-active"); loadPanel(id); }
 }
 
 async function loadPanel(id) {
-  if (id === "myListings")     await loadMyListings();
-  if (id === "farmerContacts") await loadFarmerContacts();
+  if (id === "myListings")     loadMyListings();
+  if (id === "farmerContacts") loadFarmerContacts();
   if (id === "retailerStatus") renderRetailerStatus();
-  if (id === "myInterests")    await loadMyInterests();
-  if (id === "adminStats")     await loadAdminStats();
-  if (id === "adminPending")   await loadPendingRetailers();
-  if (id === "adminUsers")     await loadAdminUsers();
-  if (id === "adminListings")  await loadAdminListings();
-  if (id === "adminCallLog")   await loadCallLog();
+  if (id === "myInterests")    loadMyInterests();
+  if (id === "adminStats")     loadAdminStats();
+  if (id === "adminPending")   loadPendingRetailers();
+  if (id === "adminUsers")     loadAdminUsers("");
+  if (id === "adminListings")  loadAdminListings();
+  if (id === "adminCallLog")   loadCallLog();
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Geolocation helper for crop listing
-───────────────────────────────────────────────────────────── */
-document.getElementById("geoBtn").addEventListener("click", () => {
-  const status = document.getElementById("geoStatus");
-  status.textContent = "Getting location…";
-  navigator.geolocation.getCurrentPosition(
-    (pos) => {
-      cropGeoLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-      status.textContent = `✓ Location captured (${cropGeoLocation.lat.toFixed(4)}, ${cropGeoLocation.lng.toFixed(4)})`;
-    },
-    () => { status.textContent = "Could not get location — location will be district-level only."; }
-  );
-});
-
-/* ─────────────────────────────────────────────────────────────
-   Farmer: my listings
-───────────────────────────────────────────────────────────── */
+/* ─── Farmer: My Listings ─── */
 async function loadMyListings() {
   const grid = document.getElementById("myListingsGrid");
-  grid.innerHTML = `<p style="color:var(--ink-soft)">Loading from Firestore…</p>`;
+  grid.innerHTML = `<p style="color:var(--ink-soft)">⏳ Loading from Firestore...</p>`;
   let crops = [];
-  try {
-    const data = await api("/crops/farmer/my");
-    crops = data.crops;
-  } catch (_) { crops = []; }
-
-  if (!crops.length) {
-    grid.innerHTML = `<div class="empty-state"><p>No listings yet. Click "Add Listing" to post your first crop.</p></div>`;
-    return;
-  }
-  grid.innerHTML = crops.map((l) => `
+  try { const d = await api("/crops/farmer/my"); crops = d.crops; } catch(_) {}
+  if (!crops.length) { grid.innerHTML = `<div class="empty-state"><p><strong>No listings yet.</strong><br>Click "Add Crop Listing" to post your first crop.</p></div>`; return; }
+  grid.innerHTML = crops.map(l => `
     <article class="listing-card">
       <div class="crop-tag"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 19c0-7 4-13 14-14-1 10-7 14-14 14Z"/></svg>${l.cropName}</div>
       <div class="qty">${l.quantity} ${l.unit}</div>
-      ${l.pricePerUnit ? `<div class="price-tag">₹${Number(l.pricePerUnit).toLocaleString("en-IN")}/${l.unit}</div>` : ""}
-      <div class="meta">📍 ${l.district}</div>
-      <span class="badge ${l.status === "active" ? "badge-green" : "badge-grey"}">${l.status}</span>
-      <div class="posted">Views: ${l.viewCount || 0} · Contacts: ${l.contactCount || 0}</div>
-      <button class="btn btn-danger btn-sm" style="margin-top:.4rem" onclick="deleteListing('${l.id}',this)">Remove</button>
+      ${l.pricePerUnit ? `<div class="price-tag">₹${Number(l.pricePerUnit).toLocaleString("en-IN")}/${l.unit}</div>` : `<div class="price-tag" style="color:var(--ink-soft)">Price negotiable</div>`}
+      <div class="meta">📍 ${l.village ? l.village + ", " : ""}${l.district}</div>
+      <span class="badge ${l.status==="active"?"badge-green":"badge-grey"}">${l.status}</span>
+      <div class="posted">👁 ${l.viewCount||0} views · 📞 ${l.contactCount||0} contacts · ${formatDate(l.createdAt)}</div>
+      <button class="btn btn-danger btn-sm" style="margin-top:.4rem" onclick="deleteListing('${l.id}',this)">🗑 Remove Listing</button>
     </article>`).join("");
 }
 
 async function deleteListing(id, btn) {
   if (!confirm("Remove this listing from Firestore?")) return;
-  btn.disabled = true;
-  try {
-    await api(`/crops/${id}`, { method: "DELETE" });
-    toast("Listing removed"); loadMyListings();
-  } catch (err) { toast(err.message, "error"); btn.disabled = false; }
+  btn.disabled = true; btn.textContent = "Removing...";
+  try { await api(`/crops/${id}`, { method: "DELETE" }); toast("Listing removed"); loadMyListings(); }
+  catch (err) { toast(err.message, "error"); btn.disabled = false; btn.textContent = "🗑 Remove Listing"; }
 }
 
 document.getElementById("newListingBtn").addEventListener("click", () => switchPanel("addCrop"));
 document.getElementById("cancelCropBtn").addEventListener("click", () => switchPanel("myListings"));
 
-/* Submit crop form */
+/* ─── Farmer: Submit Crop ─── */
 document.getElementById("submitCropBtn").addEventListener("click", async () => {
   clearFormMsg("cropError", "cropSuccess");
   const cropName = document.getElementById("cCrop").value;
   const quantity = Number(document.getElementById("cQty").value);
   const district = document.getElementById("cDistrict").value;
-  if (!cropName || !quantity || !district) {
-    showFormError("cropError", "Crop name, quantity, and district are required."); return;
-  }
-  const body = {
-    cropName, quantity, unit: document.getElementById("cUnit").value,
-    pricePerUnit: Number(document.getElementById("cPrice").value) || undefined,
-    village: document.getElementById("cVillage").value.trim(),
-    district,
-    notes: document.getElementById("cNotes").value.trim(),
-    location: cropGeoLocation || null,
-  };
+  if (!cropName) { showFormError("cropError", "Please select a crop."); return; }
+  if (!quantity || quantity <= 0) { showFormError("cropError", "Please enter a valid quantity."); return; }
+  if (!district) { showFormError("cropError", "Please select your district."); return; }
+  const body = { cropName, quantity, unit: document.getElementById("cUnit").value, pricePerUnit: Number(document.getElementById("cPrice").value) || undefined, village: document.getElementById("cVillage").value.trim(), district, notes: document.getElementById("cNotes").value.trim(), location: cropGeoLocation || null };
   setLoading(true);
   try {
     await api("/crops", { method: "POST", body });
-    document.getElementById("cropSuccess").textContent = "Listing saved to Firestore!";
+    document.getElementById("cropSuccess").textContent = "✅ Listing saved to Firestore successfully!";
     document.getElementById("cropSuccess").classList.add("is-visible");
-    toast("Crop listed successfully!");
-    setTimeout(() => switchPanel("myListings"), 1200);
-  } catch (err) {
-    showFormError("cropError", err.message);
-  } finally { setLoading(false); }
+    toast("Crop listed successfully! 🌾");
+    // Reset form
+    ["cCrop","cQty","cPrice","cVillage","cDistrict","cNotes"].forEach(id => { const el=document.getElementById(id); if(el) el.value = el.tagName==="SELECT"?"":""});
+    setTimeout(() => switchPanel("myListings"), 1500);
+  } catch (err) { showFormError("cropError", err.message); }
+  finally { setLoading(false); }
 });
 
-/* ─────────────────────────────────────────────────────────────
-   Farmer: contact requests
-───────────────────────────────────────────────────────────── */
+/* ─── Farmer: Contact Requests ─── */
 async function loadFarmerContacts() {
   const list = document.getElementById("contactRequestsList");
+  list.innerHTML = `<p style="color:var(--ink-soft)">⏳ Loading from Firestore...</p>`;
   let contacts = [];
-  try { const d = await api("/contacts/mycontacts"); contacts = d.contacts; } catch (_) {}
-  if (!contacts.length) {
-    list.innerHTML = `<p style="color:var(--ink-soft)">No contact requests yet. Once dealers send interest requests, they'll appear here.</p>`; return;
-  }
+  try { const d = await api("/contacts/mycontacts"); contacts = d.contacts; } catch(_) {}
+  if (!contacts.length) { list.innerHTML = `<div class="empty-state"><p><strong>No contact requests yet.</strong><br>When dealers show interest in your crops, they'll appear here.</p></div>`; return; }
   list.innerHTML = `<div style="overflow-x:auto"><table class="data-table">
-    <thead><tr><th>Dealer</th><th>Crop</th><th>Type</th><th>Message</th><th>Status</th><th>Action</th></tr></thead>
-    <tbody>${contacts.map((c) => `<tr>
-      <td><strong>${c.retailerName}</strong><br><small>${c.retailerBusiness || ""}</small><br><small style="font-family:var(--font-m)">${c.retailerPhone || ""}</small></td>
+    <thead><tr><th>Dealer</th><th>Crop</th><th>Type</th><th>Message</th><th>Status</th><th>Time</th><th>Action</th></tr></thead>
+    <tbody>${contacts.map(c => `<tr>
+      <td><strong>${c.retailerName}</strong><br><small style="color:var(--ink-soft)">${c.retailerBusiness||""}</small><br><small style="font-family:var(--font-m)">${c.retailerPhone||""}</small></td>
       <td>${c.cropName}</td>
       <td><span class="badge badge-gold">${c.type.replace("_"," ")}</span></td>
-      <td>${c.message || "—"}</td>
-      <td><span class="badge ${c.status === "pending" ? "badge-gold" : c.status === "accepted" ? "badge-green" : "badge-red"}">${c.status}</span></td>
-      <td>${c.status === "pending"
-        ? `<button class="btn btn-sm btn-primary" onclick="respondContact('${c.id}','accepted')">Accept</button>
-           <button class="btn btn-sm btn-danger" style="margin-left:.3rem" onclick="respondContact('${c.id}','declined')">Decline</button>`
-        : "—"
-      }</td>
+      <td style="max-width:150px">${c.message||"—"}</td>
+      <td><span class="badge ${c.status==="pending"?"badge-gold":c.status==="accepted"?"badge-green":"badge-red"}">${c.status}</span></td>
+      <td style="font-size:.8rem">${formatDateTime(c.createdAt)}</td>
+      <td>${c.status==="pending"
+        ? `<button class="btn btn-sm btn-primary" onclick="respondContact('${c.id}','accepted')">Accept</button> <button class="btn btn-sm btn-danger" onclick="respondContact('${c.id}','declined')">Decline</button>`
+        : "—"}</td>
     </tr>`).join("")}</tbody></table></div>`;
 }
 
@@ -1258,171 +1069,151 @@ async function respondContact(id, status) {
   catch (err) { toast(err.message, "error"); }
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Retailer panels
-───────────────────────────────────────────────────────────── */
+/* ─── Retailer: Status ─── */
 function renderRetailerStatus() {
-  const el = document.getElementById("retailerStatusCard");
-  if (!currentUser) return;
+  const el = document.getElementById("retailerStatusCard"); if (!currentUser) return;
   el.innerHTML = currentUser.isVerified
-    ? `<div class="stamp-card" style="border-color:var(--leaf);max-width:420px">
-        <span class="badge badge-green" style="margin-bottom:.75rem;font-size:.9rem">✓ Verified Retailer</span>
+    ? `<div class="stamp-card" style="border-color:var(--leaf);max-width:480px">
+        <span class="badge badge-green" style="margin-bottom:.75rem;font-size:.88rem">✅ Verified Retailer</span>
         <h3>You can view farmer contact numbers</h3>
-        <p style="color:var(--ink-soft);margin-top:.5rem">Your ID was verified by admin. Browse listings to see phone numbers and send interest requests.</p>
+        <p style="color:var(--ink-soft);margin-top:.5rem">Your ID was verified by admin. Browse listings to see phone numbers and call farmers directly.</p>
        </div>`
-    : `<div class="stamp-card" style="border-color:var(--gold);max-width:420px">
-        <span class="badge badge-gold" style="margin-bottom:.75rem;font-size:.9rem">⏳ Pending Verification</span>
+    : `<div class="stamp-card" style="border-color:var(--gold);max-width:480px">
+        <span class="badge badge-gold" style="margin-bottom:.75rem;font-size:.88rem">⏳ Pending Verification</span>
         <h3>Admin is reviewing your application</h3>
-        <p style="color:var(--ink-soft);margin-top:.5rem">You can browse listings but phone numbers are hidden until verified. You will be notified once approved.</p>
-        <p style="margin-top:.75rem;font-size:.85rem;color:var(--ink-soft)">Submitted ID: <strong>${currentUser.govtIdNumber || "Not provided"}</strong></p>
+        <p style="color:var(--ink-soft);margin-top:.5rem">You can browse listings but phone numbers are hidden until verified. You'll be notified once approved.</p>
+        <p style="margin-top:.75rem;font-size:.85rem;color:var(--ink-soft)">Govt ID submitted: <strong>${currentUser.govtIdNumber||"Not provided"}</strong></p>
        </div>`;
 }
 
+/* ─── Retailer: My Interests ─── */
 async function loadMyInterests() {
   const list = document.getElementById("myInterestsList");
+  list.innerHTML = `<p style="color:var(--ink-soft)">⏳ Loading from Firestore...</p>`;
   let contacts = [];
-  try { const d = await api("/contacts/my-interests"); contacts = d.contacts; } catch (_) {}
-  if (!contacts.length) { list.innerHTML = `<p style="color:var(--ink-soft)">No interest requests sent yet.</p>`; return; }
+  try { const d = await api("/contacts/my-interests"); contacts = d.contacts; } catch(_) {}
+  if (!contacts.length) { list.innerHTML = `<div class="empty-state"><p><strong>No interest requests sent yet.</strong><br>Browse crops and click "Send Interest Request" to get started.</p></div>`; return; }
   list.innerHTML = `<div style="overflow-x:auto"><table class="data-table">
-    <thead><tr><th>Crop</th><th>Farmer</th><th>Message</th><th>Status</th><th>Sent</th></tr></thead>
-    <tbody>${contacts.map((c) => `<tr>
+    <thead><tr><th>Crop</th><th>Farmer</th><th>My Message</th><th>Status</th><th>Sent</th></tr></thead>
+    <tbody>${contacts.map(c => `<tr>
       <td>${c.cropName}</td>
       <td>${c.farmerName}</td>
-      <td>${c.message || "—"}</td>
-      <td><span class="badge ${c.status === "pending" ? "badge-gold" : c.status === "accepted" ? "badge-green" : "badge-red"}">${c.status}</span></td>
-      <td>${c.createdAt ? new Date(c.createdAt._seconds ? c.createdAt._seconds * 1000 : c.createdAt).toLocaleDateString("en-IN") : "—"}</td>
+      <td>${c.message||"—"}</td>
+      <td><span class="badge ${c.status==="pending"?"badge-gold":c.status==="accepted"?"badge-green":"badge-red"}">${c.status}</span></td>
+      <td style="font-size:.8rem">${formatDateTime(c.createdAt)}</td>
     </tr>`).join("")}</tbody></table></div>`;
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Admin panels
-───────────────────────────────────────────────────────────── */
+/* ─── Admin: Stats ─── */
 async function loadAdminStats() {
+  const grid = document.getElementById("adminStatGrid");
+  grid.innerHTML = `<p style="color:var(--ink-soft)">⏳ Loading from Firestore...</p>`;
   let stats = {};
-  try { const d = await api("/admin/stats"); stats = d.stats; } catch (_) {}
-  document.getElementById("adminStatGrid").innerHTML = Object.entries({
-    "Total Users": stats.totalUsers || 0,
-    "Farmers": stats.totalFarmers || 0,
-    "Retailers": stats.totalRetailers || 0,
-    "Verified": stats.verifiedRetailers || 0,
-    "Pending": stats.pendingRetailers || 0,
-    "Listings": stats.totalListings || 0,
-    "Active": stats.activeListings || 0,
-    "Interactions": stats.totalContacts || 0,
-  }).map(([k, v]) => `<div class="stat-card"><div class="num">${v}</div><div class="lbl">${k}</div></div>`).join("");
+  try { const d = await api("/admin/stats"); stats = d.stats; } catch(_) {}
+  grid.innerHTML = Object.entries({
+    "Total Users": stats.totalUsers||0,
+    "🌾 Farmers": stats.totalFarmers||0,
+    "🏪 Retailers": stats.totalRetailers||0,
+    "✅ Verified": stats.verifiedRetailers||0,
+    "⏳ Pending": stats.pendingRetailers||0,
+    "Total Listings": stats.totalListings||0,
+    "Active Now": stats.activeListings||0,
+    "Interactions": stats.totalContacts||0,
+  }).map(([k,v]) => `<div class="stat-card"><div class="num">${v}</div><div class="lbl">${k}</div></div>`).join("");
 }
 
+/* ─── Admin: Pending Retailers ─── */
 async function loadPendingRetailers() {
   const list = document.getElementById("pendingRetailersList");
+  list.innerHTML = `<p style="color:var(--ink-soft)">⏳ Loading...</p>`;
   let users = [];
-  try { const d = await api("/admin/users?role=retailer&verified=false"); users = d.users; } catch (_) {}
-  if (!users.length) { list.innerHTML = `<p style="color:var(--ink-soft)">No pending approvals.</p>`; return; }
-  list.innerHTML = `<div style="display:grid;gap:1rem">${users.map((u) => `
+  try { const d = await api("/admin/users?role=retailer&verified=false"); users = d.users; } catch(_) {}
+  if (!users.length) { list.innerHTML = `<div class="empty-state"><p><strong>No pending approvals</strong> — all retailers are verified.</p></div>`; return; }
+  list.innerHTML = `<div style="display:grid;gap:1rem">${users.map(u => `
     <div class="stamp-card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
       <div>
-        <strong>${u.name}</strong> — ${u.businessName || "No business name"}<br>
+        <strong>${u.name}</strong> — ${u.businessName||"No business name"}<br>
         <span style="font-family:var(--font-m);font-size:.82rem;color:var(--ink-soft)">${u.phone} · ${u.district}</span><br>
-        <span style="font-size:.8rem;color:var(--ink-soft)">Govt ID: ${u.govtIdNumber || "Not provided"}</span>
+        <span style="font-size:.8rem;color:var(--ink-soft)">Govt ID: <strong>${u.govtIdNumber||"Not provided"}</strong></span><br>
+        <span style="font-size:.8rem;color:var(--ink-soft)">Registered: ${formatDate(u.createdAt)}</span>
       </div>
       <div style="display:flex;gap:.6rem">
-        <button class="btn btn-primary btn-sm" onclick="verifyRetailer('${u.uid || u.id}',true)">Approve</button>
-        <button class="btn btn-danger btn-sm"  onclick="verifyRetailer('${u.uid || u.id}',false)">Reject</button>
+        <button class="btn btn-primary btn-sm" onclick="verifyRetailer('${u.uid||u.id}',true)">✅ Approve</button>
+        <button class="btn btn-danger btn-sm" onclick="verifyRetailer('${u.uid||u.id}',false)">❌ Reject</button>
       </div>
     </div>`).join("")}</div>`;
 }
 
 async function verifyRetailer(uid, approve) {
-  try {
-    await api(`/admin/users/${uid}/verify`, { method: "PUT", body: { approve } });
-    toast(approve ? "Retailer approved!" : "Retailer rejected", approve ? "success" : "error");
-    loadPendingRetailers(); loadAdminUsers();
-  } catch (err) { toast(err.message, "error"); }
-}
-
-async function loadAdminUsers(role) {
-  const tbody = document.getElementById("usersTableBody");
-  let users = [];
-  try { const d = await api("/admin/users" + (role ? `?role=${role}` : "")); users = d.users; } catch (_) {}
-
-  document.querySelectorAll("[data-ufilter]").forEach((btn) => {
-    btn.onclick = () => loadAdminUsers(btn.dataset.ufilter);
-  });
-
-  tbody.innerHTML = users.length === 0
-    ? `<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--ink-soft)">No users found.</td></tr>`
-    : users.map((u) => `<tr>
-      <td>${u.name}</td>
-      <td style="font-family:var(--font-m)">${u.phone}</td>
-      <td><span class="badge ${u.role==="admin"?"badge-gold":u.role==="retailer"?"badge-grey":"badge-green"}">${u.role}</span></td>
-      <td>${u.district || "—"}</td>
-      <td>${u.role === "retailer"
-        ? `<span class="badge ${u.isVerified ? "badge-green" : "badge-red"}">${u.isVerified ? "Verified" : "Pending"}</span>`
-        : `<span class="badge ${u.isActive ? "badge-green" : "badge-grey"}">${u.isActive ? "Active" : "Inactive"}</span>`
-      }</td>
-      <td>${u.role === "retailer" && !u.isVerified
-        ? `<button class="btn btn-sm btn-primary" onclick="verifyRetailer('${u.uid||u.id}',true)">Approve</button>`
-        : `<button class="btn btn-sm btn-outline" onclick="toggleUser('${u.uid||u.id}')">Toggle</button>`
-      }</td>
-    </tr>`).join("");
-}
-
-async function toggleUser(uid) {
-  try { await api(`/admin/users/${uid}/toggle`, { method:"PUT" }); toast("User status updated"); loadAdminUsers(); }
+  try { await api(`/admin/users/${uid}/verify`, { method:"PUT", body:{approve} }); toast(approve ? "Retailer approved! ✅" : "Retailer rejected", approve ? "success" : "error"); loadPendingRetailers(); loadAdminStats(); }
   catch (err) { toast(err.message, "error"); }
 }
 
+/* ─── Admin: All Users ─── */
+async function loadAdminUsers(role) {
+  const tbody = document.getElementById("usersTableBody");
+  tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--ink-soft)">⏳ Loading...</td></tr>`;
+  let users = [];
+  try { const d = await api("/admin/users" + (role ? `?role=${role}` : "")); users = d.users; } catch(_) {}
+  if (!users.length) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--ink-soft)">No users found.</td></tr>`; return; }
+  tbody.innerHTML = users.map(u => `<tr>
+    <td><strong>${u.name}</strong></td>
+    <td style="font-family:var(--font-m)">${u.phone}</td>
+    <td><span class="badge ${u.role==="admin"?"badge-gold":u.role==="retailer"?"badge-grey":"badge-green"}">${u.role}</span></td>
+    <td>${u.district||"—"}</td>
+    <td>${u.role==="retailer"
+      ? `<span class="badge ${u.isVerified?"badge-green":"badge-red"}">${u.isVerified?"✅ Verified":"⏳ Pending"}</span>`
+      : `<span class="badge ${u.isActive?"badge-green":"badge-grey"}">${u.isActive?"Active":"Inactive"}</span>`}</td>
+    <td>${u.role==="retailer"&&!u.isVerified
+      ? `<button class="btn btn-sm btn-primary" onclick="verifyRetailer('${u.uid||u.id}',true)">Approve</button>`
+      : `<button class="btn btn-sm btn-outline" onclick="toggleUser('${u.uid||u.id}')">${u.isActive?"Deactivate":"Activate"}</button>`}</td>
+  </tr>`).join("");
+}
+
+async function toggleUser(uid) {
+  try { await api(`/admin/users/${uid}/toggle`, {method:"PUT"}); toast("User status updated"); loadAdminUsers(""); }
+  catch (err) { toast(err.message, "error"); }
+}
+
+/* ─── Admin: All Listings ─── */
 async function loadAdminListings() {
   const tbody = document.getElementById("adminListingsBody");
+  tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--ink-soft)">⏳ Loading from Firestore...</td></tr>`;
   let crops = [];
-  try { const d = await api("/admin/listings"); crops = d.crops; } catch (_) {}
-  tbody.innerHTML = crops.length === 0
-    ? `<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--ink-soft)">No listings in Firestore yet.</td></tr>`
-    : crops.map((l) => `<tr>
-      <td>${l.cropName}</td>
-      <td style="font-family:var(--font-m)">${l.quantity} ${l.unit}</td>
-      <td>${l.district}</td>
-      <td>${l.farmerName || "—"}</td>
-      <td style="font-family:var(--font-m)">${l.pricePerUnit ? "₹" + l.pricePerUnit : "—"}</td>
-      <td><span class="badge ${l.status === "active" ? "badge-green" : "badge-grey"}">${l.status}</span></td>
-      <td>${l.createdAt ? new Date(l.createdAt._seconds ? l.createdAt._seconds*1000 : l.createdAt).toLocaleDateString("en-IN") : "—"}</td>
-    </tr>`).join("");
+  try { const d = await api("/admin/listings"); crops = d.crops; } catch(_) { crops = MOCK_LISTINGS; }
+  if (!crops.length) { tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--ink-soft)">No listings yet.</td></tr>`; return; }
+  tbody.innerHTML = crops.map(l => `<tr>
+    <td><strong>${l.cropName}</strong></td>
+    <td style="font-family:var(--font-m)">${l.quantity} ${l.unit}</td>
+    <td>${l.district}</td>
+    <td>${l.farmerName||"—"}</td>
+    <td style="font-family:var(--font-m)">${l.pricePerUnit ? "₹"+Number(l.pricePerUnit).toLocaleString("en-IN") : "Negotiable"}</td>
+    <td><span class="badge ${l.status==="active"?"badge-green":"badge-grey"}">${l.status}</span></td>
+    <td style="font-size:.8rem">${formatDate(l.createdAt)}</td>
+  </tr>`).join("");
 }
 
+/* ─── Admin: Call Log ─── */
 async function loadCallLog() {
   const tbody = document.getElementById("callLogBody");
+  tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--ink-soft)">⏳ Loading from Firestore...</td></tr>`;
   let contacts = [];
-  try { const d = await api("/admin/contacts"); contacts = d.contacts; } catch (_) {}
-  tbody.innerHTML = contacts.length === 0
-    ? `<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--ink-soft)">No interactions logged yet.</td></tr>`
-    : contacts.map((c) => `<tr>
-      <td>${c.retailerName || "—"}</td>
-      <td>${c.farmerName || "—"}</td>
-      <td>${c.cropName || "—"}</td>
-      <td><span class="badge badge-gold">${c.type.replace("_"," ")}</span></td>
-      <td><span class="badge ${c.status === "pending" ? "badge-gold" : c.status === "accepted" ? "badge-green" : "badge-grey"}">${c.status}</span></td>
-      <td>${c.createdAt ? new Date(c.createdAt._seconds ? c.createdAt._seconds*1000 : c.createdAt).toLocaleString("en-IN") : "—"}</td>
-    </tr>`).join("");
+  try { const d = await api("/admin/contacts"); contacts = d.contacts; } catch(_) {}
+  if (!contacts.length) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--ink-soft)">No interactions logged yet.</td></tr>`; return; }
+  tbody.innerHTML = contacts.map(c => `<tr>
+    <td>${c.retailerName||"—"}</td>
+    <td>${c.farmerName||"—"}</td>
+    <td>${c.cropName||"—"}</td>
+    <td><span class="badge badge-gold">${c.type.replace("_"," ")}</span></td>
+    <td><span class="badge ${c.status==="pending"?"badge-gold":c.status==="accepted"?"badge-green":"badge-grey"}">${c.status}</span></td>
+    <td style="font-size:.8rem">${formatDateTime(c.createdAt)}</td>
+  </tr>`).join("");
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Nav + Boot
-───────────────────────────────────────────────────────────── */
-function initNav() {
-  const toggle = document.querySelector(".nav-toggle");
-  const nav    = document.querySelector(".nav");
-  if (toggle && nav) toggle.addEventListener("click", () => {
-    const open = nav.classList.toggle("is-open");
-    toggle.setAttribute("aria-expanded", String(open));
-  });
-  document.getElementById("year").textContent = new Date().getFullYear();
-}
+/* ─── PWA ─── */
+if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
 
-/* PWA */
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
-}
-
-/* Bootstrap */
+/* ─── Bootstrap ─── */
 document.addEventListener("DOMContentLoaded", () => {
   initNav();
   initAuthPage();
